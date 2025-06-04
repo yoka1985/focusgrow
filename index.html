@@ -8,6 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Google Analytics: Gamified Pomodoro -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7BPHF5MCMR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-7BPHF5MCMR');
+    </script>
     <style>
         :root {
             --font-family-main: 'Poppins', sans-serif;
@@ -22,9 +30,10 @@
             --button-secondary-hover-bg-light: #4b5563; 
             --input-bg-light: #ffffff;
             --input-border-light: #d1d5db; 
-            --highlight-bg-light: rgba(79, 70, 229, 0.1); 
+            --highlight-bg-light: rgba(250, 204, 21, 0.2); /* yellow-400 with opacity */
             --intention-text-light: #4338ca; 
-            --intention-bg-light: rgba(199, 210, 254, 0.3); 
+            --intention-prompt-text-light: #facc15; /* yellow-400 */
+
 
             --bg-color-dark: #111827; 
             --text-color-dark: #e5e7eb; 
@@ -37,9 +46,9 @@
             --button-secondary-hover-bg-dark: #6b7280; 
             --input-bg-dark: #374151; 
             --input-border-dark: #4b5563; 
-            --highlight-bg-dark: rgba(165, 180, 252, 0.15); 
-            --intention-text-dark: #c7d2fe; 
-            --intention-bg-dark: rgba(67, 56, 202, 0.2); 
+            --highlight-bg-dark: rgba(234, 179, 8, 0.25); /* yellow-500 with opacity */
+            --intention-text-dark: #fde047; /* yellow-300 */
+            --intention-prompt-text-dark: #fde047; /* yellow-300 */
         }
 
         body { font-family: var(--font-family-main); transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; }
@@ -52,7 +61,10 @@
 
         body { background-color: var(--bg-color-light); color: var(--text-color-light); }
         #app-container { background-color: var(--card-bg-light); box-shadow: var(--card-shadow-light); }
-        #message-area, #intention-prompt-button { color: var(--primary-accent-light); }
+        #message-area { color: var(--primary-accent-light); }
+        #intention-prompt-button { color: var(--intention-prompt-text-light); font-size: 1.125rem; /* text-lg */ }
+        body.dark #intention-prompt-button { color: var(--intention-prompt-text-dark); }
+
         .timer-text { color: var(--text-color-light); }
         #start-pause-button { background-color: var(--button-primary-bg-light); color: white; }
         #start-pause-button:hover { background-color: var(--button-primary-hover-bg-light); }
@@ -61,16 +73,16 @@
         #reset-button:hover { background-color: var(--button-secondary-hover-bg-light); }
         select, input[type="range"], input[type="text"] { background-color: var(--input-bg-light); border-color: var(--input-border-light); color: var(--text-color-light); }
         .modal-content { background-color: var(--card-bg-light); color: var(--text-color-light); }
-        #modal-ok-button { background-color: var(--button-primary-bg-light); color: white; }
-        #modal-ok-button:hover { background-color: var(--button-primary-hover-bg-light); }
+        #modal-ok-button, #help-modal-ok-button { background-color: var(--button-primary-bg-light); color: white; }
+        #modal-ok-button:hover, #help-modal-ok-button:hover { background-color: var(--button-primary-hover-bg-light); }
         .message-highlight-base { transition: background-color 0.3s ease-out; }
         .message-highlight-active { background-color: var(--highlight-bg-light); animation: highlight-fade-light 1.5s ease-out; }
         @keyframes highlight-fade-light { 0% { background-color: var(--highlight-bg-light); } 100% { background-color: transparent; } }
-        #intention-display { color: var(--intention-text-light); background-color: var(--intention-bg-light); }
+        #intention-display { color: var(--intention-text-light); /* Background removed for cleaner look */ }
         
         body.dark { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
         body.dark #app-container { background-color: var(--card-bg-dark); box-shadow: var(--card-shadow-dark); }
-        body.dark #message-area, body.dark #intention-prompt-button { color: var(--primary-accent-dark); }
+        body.dark #message-area { color: var(--primary-accent-dark); }
         body.dark .timer-text { color: var(--text-color-dark); }
         body.dark #start-pause-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
         body.dark #start-pause-button:hover { background-color: var(--button-primary-hover-bg-dark); }
@@ -79,14 +91,14 @@
         body.dark #reset-button:hover { background-color: var(--button-secondary-hover-bg-dark); }
         body.dark select, body.dark input[type="range"], body.dark input[type="text"] { background-color: var(--input-bg-dark); border-color: var(--input-border-dark); color: var(--text-color-dark); }
         body.dark .modal-content { background-color: var(--card-bg-dark); color: var(--text-color-dark); }
-        body.dark #modal-ok-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
-        body.dark #modal-ok-button:hover { background-color: var(--button-primary-hover-bg-dark); }
+        body.dark #modal-ok-button, body.dark #help-modal-ok-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
+        body.dark #modal-ok-button:hover, body.dark #help-modal-ok-button:hover { background-color: var(--button-primary-hover-bg-dark); }
         body.dark .pomodoro-count-bg { background-color: rgba(255, 255, 255, 0.1); }
         body.dark button.icon-button { color: var(--text-color-dark); }
         body.dark button.icon-button:hover { background-color: rgba(255, 255, 255, 0.1); }
         body.dark .message-highlight-active { background-color: var(--highlight-bg-dark); animation: highlight-fade-dark 1.5s ease-out; }
         @keyframes highlight-fade-dark { 0% { background-color: var(--highlight-bg-dark); } 100% { background-color: transparent; } }
-        body.dark #intention-display { color: var(--intention-text-dark); background-color: var(--intention-bg-dark); }
+        body.dark #intention-display { color: var(--intention-text-dark); }
 
 
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); }
@@ -188,14 +200,20 @@
 
         #intention-display {
             font-size: 0.875rem; 
-            margin-top: 1.25rem; 
+            margin-top: 1.5rem; 
             margin-bottom: 0.75rem; 
             padding: 0.25rem 0.5rem;
             border-radius: 0.375rem; 
             min-height: 1.75rem; 
             font-style: italic;
             text-align: center;
+            line-height: 1.4; 
         }
+        .intention-item { display: block; }
+        .intention-item-1 { font-size: 0.875rem; } 
+        .intention-item-2 { font-size: 0.75rem; opacity: 0.8; margin-left: 0.5rem; } 
+        .intention-item-3 { font-size: 0.75rem; opacity: 0.7; margin-left: 1rem; } 
+
         #intention-input {
             border-radius: 0.375rem;
             padding: 0.375rem 0.5rem;
@@ -203,9 +221,9 @@
         }
         #animated-highlight {
             position: absolute;
-            border-radius: 0.375rem;
+            border-radius: 0.375rem; 
             background-color: var(--highlight-bg-light);
-            transition: top 0.5s ease-in-out, left 0.5s ease-in-out, width 0.5s ease-in-out, height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+            transition: top 0.4s ease-in-out, left 0.4s ease-in-out, width 0.4s ease-in-out, height 0.4s ease-in-out, opacity 0.3s ease-in-out;
             opacity: 0;
             pointer-events: none; 
             z-index: 0; 
@@ -224,56 +242,60 @@
                     <div class="pomodoro-count-bg text-left">
                         <span class="text-xs sm:text-sm">🍅 Pomodoros: <span id="session-count" class="font-bold">0</span></span>
                     </div>
+                    <br><br>
                     <div class="flex items-center">
                         <label for="work-duration" class="duration-setting-label">Focus:</label>
                         <select id="work-duration" class="compact-select flex-grow"> 
-                            <option value="0.1">0.1m</option><option value="1">1m</option><option value="15">15m</option><option value="20">20m</option>
-                            <option value="25" selected>25m</option><option value="30">30m</option><option value="45">45m</option><option value="50">50m</option>
+                            <option value="1">1m</option><option value="15">15m</option><option value="20">20m</option>
+                            <option value="25" selected>25m</option><option value="30">30m</option><option value="45">45m</option>
                         </select>
                     </div>
                     <div class="flex items-center">
                         <label for="break-duration" class="duration-setting-label">Break:</label>
                         <select id="break-duration" class="compact-select flex-grow"> 
-                            <option value="0.1">0.1m</option><option value="1">1m</option><option value="5" selected>5m</option><option value="10">10m</option><option value="15">15m</option>
+                            <option value="1">1m</option><option value="5" selected>5m</option><option value="10">10m</option><option value="15">15m</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="relative inline-block"> 
-                    <button id="main-settings-toggle" title="Settings" aria-label="Settings" class="icon-button text-xl">⚙️</button>
-                    <div id="main-settings-dropdown" class="main-settings-dropdown">
-                        <div class="space-y-3 text-sm">
-                            <div class="flex justify-between items-center">
-                                <span class="font-medium">Theme:</span>
-                                <button id="theme-toggle-button" title="Toggle Dark Mode" aria-label="Toggle Dark Mode" class="icon-button text-xl ml-auto">🌓</button>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="font-medium">Alert Sound:</span>
-                                <button id="alert-sound-toggle-button" title="Toggle Alert Sound" aria-label="Toggle Alert Sound" class="icon-button text-xl ml-auto">🔔</button>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="font-medium">Pop-up Alerts:</span>
-                                <button id="overlay-alerts-toggle" title="Toggle Pop-up Alerts" aria-label="Toggle Pop-up Alerts" class="icon-button text-xl ml-auto">💬</button>
-                            </div>
-                            <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
-                                <button id="advanced-settings-toggle-inner" title="Breaks settings" aria-label="Breaks settings" class="w-full text-left flex justify-between items-center py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-1">
-                                    <span>Breaks settings</span> <span class="text-xl">☕</span>
-                                </button>
-                                <div id="advanced-settings-panel-inner" class="advanced-settings-panel-inner pl-2">
-                                    <div>
-                                        <label for="long-break-interval" class="block mb-1 font-medium text-left">Long Break After:</label>
-                                        <select id="long-break-interval" class="w-full p-2 border rounded-md shadow-sm text-sm compact-select">
-                                            <option value="2">2 Poms</option><option value="3">3 Poms</option>
-                                            <option value="4" selected>4 Poms</option><option value="5">5 Poms</option>
-                                            <option value="6">6 Poms</option>
-                                        </select>
-                                    </div>
-                                    <div class="mt-2">
-                                        <label for="long-break-duration" class="block mb-1 font-medium text-left">Long Break For:</label>
-                                         <select id="long-break-duration" class="w-full p-2 border rounded-md shadow-sm text-sm compact-select">
-                                            <option value="10">10m</option><option value="15" selected>15m</option> <option value="20">20m</option>
-                                            <option value="25">25m</option><option value="30">30m</option>
-                                        </select>
+                <div class="flex items-center space-x-1">
+                    <button id="help-button" title="Help / How to Use" aria-label="Help / How to Use" class="icon-button text-xl">❓</button>
+                    <div class="relative inline-block"> 
+                        <button id="main-settings-toggle" title="Settings" aria-label="Settings" class="icon-button text-xl">⚙️</button>
+                        <div id="main-settings-dropdown" class="main-settings-dropdown">
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Theme:</span>
+                                    <button id="theme-toggle-button" title="Toggle Dark Mode" aria-label="Toggle Dark Mode" class="icon-button text-xl ml-auto">🌓</button>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Alert Sound:</span>
+                                    <button id="alert-sound-toggle-button" title="Toggle Alert Sound" aria-label="Toggle Alert Sound" class="icon-button text-xl ml-auto">🔔</button>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Pop-up Alerts:</span>
+                                    <button id="overlay-alerts-toggle" title="Toggle Pop-up Alerts" aria-label="Toggle Pop-up Alerts" class="icon-button text-xl ml-auto">💬</button>
+                                </div>
+                                <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                    <button id="advanced-settings-toggle-inner" title="Breaks settings" aria-label="Breaks settings" class="w-full text-left flex justify-between items-center py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-1">
+                                        <span>Breaks settings</span> <span class="text-xl">☕</span>
+                                    </button>
+                                    <div id="advanced-settings-panel-inner" class="advanced-settings-panel-inner pl-2">
+                                        <div>
+                                            <label for="long-break-interval" class="block mb-1 font-medium text-left">Long Break After:</label>
+                                            <select id="long-break-interval" class="w-full p-2 border rounded-md shadow-sm text-sm compact-select">
+                                                <option value="2">2 Poms</option><option value="3">3 Poms</option>
+                                                <option value="4" selected>4 Poms</option><option value="5">5 Poms</option>
+                                                <option value="6">6 Poms</option>
+                                            </select>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label for="long-break-duration" class="block mb-1 font-medium text-left">Long Break For:</label>
+                                             <select id="long-break-duration" class="w-full p-2 border rounded-md shadow-sm text-sm compact-select">
+                                                <option value="10">10m</option><option value="15" selected>15m</option> <option value="20">20m</option>
+                                                <option value="25">25m</option><option value="30">30m</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -281,7 +303,8 @@
                     </div>
                 </div>
             </div>
-            <div id="message-area-container" class="text-lg font-semibold h-10 mb-4 rounded-md px-2 text-center flex flex-col justify-center items-center relative"> 
+            <br>
+            <div id="message-area-container" class="text-lg font-semibold h-10 mb-5 rounded-md px-2 text-center flex flex-col justify-center items-center relative"> 
                 <div id="message-area" class="message-highlight-base">Ready?</div>
                 <div id="intention-input-area" class="hidden w-full max-w-xs mt-1">
                     <input type="text" id="intention-input" placeholder="My focus for this bloom..." maxlength="70" class="w-full border p-1.5 text-sm rounded-md shadow-sm">
@@ -327,7 +350,7 @@
         <div id="timer-display" class="timer-text font-bold mb-5 text-center">25:00</div>
         
         <div class="flex justify-between items-center mb-5 px-2">
-            <div class="flex items-center space-x-1 ml-2"> 
+            <div class="flex items-center space-x-1 ml-3"> 
                  <div id="background-sound-controls-main" class="hidden items-center"> 
                     <input type="range" id="background-volume-slider-main" min="0" max="1" step="0.01" value="0.1" class="volume-slider vertical-slider">
                  </div>
@@ -339,9 +362,6 @@
             </div>
             <div class="w-10"></div> 
         </div>
-         <!-- current-background-sound-name-main removed from HTML -->
-
-
     </div>
 
     <div id="notification-modal" class="modal">
@@ -353,6 +373,21 @@
             </div>
         </div>
     </div>
+    
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-3">How to Use Focus Grow</h3>
+            <p class="text-sm text-left mb-2">
+                Set a clear intention for each plant's growth cycle (one main focus). Each completed Pomodoro (focus session) helps your plant bloom.
+                Focus during work sprints, take your breaks, and watch your garden flourish as you achieve your goals!
+            </p>
+            <p class="text-xs text-left mb-4">
+                Customize timers and sounds via the ⚙️ settings. Toggle background music with 🎧.
+            </p>
+            <button id="help-modal-ok-button" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">Got it!</button>
+        </div>
+    </div>
+
 
     <script>
         // DOM Elements
@@ -363,7 +398,7 @@
             backgroundSoundToggleMain, backgroundSoundControlsMain, backgroundVolumeSliderMain,
             overlayAlertsToggle, advancedSettingsToggleInner, advancedSettingsPanelInner, 
             longBreakIntervalSelect, longBreakDurationSelect, body, notificationModal, modalMessage, 
-            modalOkButton, modalDisableAlertsButton;
+            modalOkButton, modalDisableAlertsButton, helpButton, helpModal, helpModalOkButton;
         let plantSlots = []; 
 
         // App State
@@ -378,9 +413,9 @@
         
         const MAX_PLANTS = 3;
         const STAGES_PER_PLANT = 5; 
-        const POMODOROS_PER_STAGE = 1;
+        const POMODOROS_PER_STAGE = 1; 
         let plantStates = []; 
-        let currentIntentions = []; 
+        let currentIntentions = []; // Single intention per plant
 
         const PLANT_EMOJIS_BY_STAGE = ['🌱', '🌿', '🪴', '🌸', '🌳'];
         const PLANT_SLOT_CONFIGS = {
@@ -400,16 +435,13 @@
 
         const BACKGROUND_SOUNDS = [ 
             { key: 'off', name: 'Off', emoji: '🎧', remark: '', src: null },
-            { key: 'alpha', name: 'Alpha Waves', emoji: '🧠', remark: '(mild focus)', src: 'alpha_4_5_clip.mp3', fallbackType: 'binaural', baseFreq: 200, beatFreq: 10 }, 
-            { key: 'ocean', name: 'Ocean Waves', emoji: '🌊', remark: '(calming)', src: 'ocean_clip.mp3' },  
             { key: 'guitar', name: 'Soft Guitar', emoji: '🎸', remark: '(relaxing)', src: 'soft_guitar_23_trim.mp3' },  
+            { key: 'waves', name: 'Silent Waves', emoji: '🌊', remark: '(calming)', src: 'silent_waves_27_trim.mp3' },  
         ];
         let currentBackgroundSoundIndex = 0;
         let backgroundAudioElement; 
         let backgroundAudioSourceNode; 
         let backgroundGainNode;
-        let backgroundFallbackOsc1; // For generated fallback
-        let backgroundFallbackOsc2; // For generated fallback
         
         let isDarkMode = true; 
         let longBreakInterval = 4; 
@@ -452,6 +484,10 @@
             longBreakIntervalSelect = document.getElementById('long-break-interval'); 
             longBreakDurationSelect = document.getElementById('long-break-duration'); 
             
+            helpButton = document.getElementById('help-button');
+            helpModal = document.getElementById('help-modal');
+            helpModalOkButton = document.getElementById('help-modal-ok-button');
+            
             body = document.body;
             notificationModal = document.getElementById('notification-modal');
             modalMessage = document.getElementById('modal-message');
@@ -472,7 +508,7 @@
             checkAndPromptForIntention();
 
 
-            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, overlayAlertsToggle, advancedSettingsToggleInner, setIntentionButton, modalDisableAlertsButton, backgroundSoundToggleMain].forEach(button => {
+            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, overlayAlertsToggle, advancedSettingsToggleInner, setIntentionButton, modalDisableAlertsButton, backgroundSoundToggleMain, helpButton, helpModalOkButton].forEach(button => {
                 if(button !== null && typeof button !== 'undefined') { 
                     button.addEventListener('mousedown', () => button.classList.add('active-pressed'));
                     button.addEventListener('mouseup', () => button.classList.remove('active-pressed'));
@@ -502,6 +538,10 @@
                  event.stopPropagation(); 
                  advancedSettingsPanelInner.classList.toggle('open');
             });
+            
+            if(helpButton) helpButton.addEventListener('click', () => { if(helpModal) helpModal.style.display = 'block'; });
+            if(helpModalOkButton) helpModalOkButton.addEventListener('click', () => { if(helpModal) helpModal.style.display = 'none'; });
+
 
             longBreakIntervalSelect.addEventListener('change', () => { updateAdvancedSettings(); saveState(); });
             longBreakDurationSelect.addEventListener('change', () => { updateAdvancedSettings(); saveState(); });
@@ -539,6 +579,9 @@
                     mainSettingsDropdown.classList.remove('open');
                     if (advancedSettingsPanelInner) advancedSettingsPanelInner.classList.remove('open'); 
                 }
+                 if (helpModal && helpModal.style.display === 'block' && helpModalOkButton && !helpModal.querySelector('.modal-content').contains(event.target) && event.target !== helpButton) {
+                    helpModal.style.display = 'none';
+                }
             });
 
             workDurationSelect.value = workDuration / 60;
@@ -567,11 +610,11 @@
                 backgroundVolume: parseFloat(backgroundVolumeSliderMain && backgroundVolumeSliderMain.value ? backgroundVolumeSliderMain.value : 0.1), 
                 showOverlayAlerts 
             };
-            localStorage.setItem('pomodoroGrowthAppV16', JSON.stringify(state)); 
+            localStorage.setItem('pomodoroGrowthAppV17', JSON.stringify(state)); 
         }
 
         function loadState() {
-            const savedState = localStorage.getItem('pomodoroGrowthAppV16'); 
+            const savedState = localStorage.getItem('pomodoroGrowthAppV17'); 
             if (savedState) {
                 const state = JSON.parse(savedState);
                 workDurationSelect.value = state.workDuration || 25;
@@ -653,9 +696,10 @@
             
             intentionInputArea.classList.add('hidden'); 
             intentionDisplay.classList.add('hidden');   
+            animatedHighlight.style.opacity = '0';  
 
             if (plant && plant.stage === 0 && !currentIntentions[activePlantIdx]) {
-                messageArea.innerHTML = `<button id="intention-prompt-button" class="font-semibold hover:underline">+ Add Intention for this Bloom</button>`;
+                messageArea.innerHTML = `<button id="intention-prompt-button" class="font-semibold text-yellow-500 dark:text-yellow-400 hover:underline text-lg">🎯 Add Intention for this Bloom</button>`;
                 const promptButton = document.getElementById('intention-prompt-button');
                 if(promptButton) { 
                     promptButton.addEventListener('click', showIntentionInput);
@@ -674,7 +718,6 @@
                  messageArea.textContent = "Ready?";
                  startPauseButton.disabled = false; 
                  if (!isRunning) startPauseButton.textContent = 'Start';
-                 animatedHighlight.style.opacity = '0';
             }
         }
 
@@ -711,7 +754,7 @@
         function toggleTimer() { 
             const activePlantIdx = getActivePlantIndexForIntention();
             if (plantStates[activePlantIdx] && plantStates[activePlantIdx].stage === 0 && !currentIntentions[activePlantIdx] && !isRunning) {
-                showIntentionInput();
+                showIntentionInput(); 
                 return;
             }
             if (isRunning) pauseTimer(); else startTimer(); 
@@ -834,12 +877,11 @@
                     updateMessageArea(`Break Time! (${currentBreakVal}m)`);
                 }
                 if (plantStates[activePlantIdx] && plantStates[activePlantIdx].stage === STAGES_PER_PLANT - 1 && plantGrew) {
+                    currentIntentions[activePlantIdx] = ""; 
                     if (plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
                         plantStates[0] = { stage: 0, pomosTowardsNextStage: 0 };
                         currentIntentions[0] = "";
                         updatePlantVisual(0);
-                    } else {
-                        currentIntentions[activePlantIdx] = ""; 
                     }
                 }
             } else { 
@@ -914,18 +956,9 @@
         }
         
         function advancePlantGrowth() {
-            let activePlantIdx = plantStates.findIndex((p, i) => p.stage < STAGES_PER_PLANT - 1 && currentIntentions[i]);
+            let activePlantIdx = plantStates.findIndex((p, i) => p.stage < STAGES_PER_PLANT - 1 && currentIntentions[i]); 
             
             if (activePlantIdx === -1) { 
-                activePlantIdx = plantStates.findIndex((p, i) => p.stage === 0 && p.pomosTowardsNextStage === 0 && !currentIntentions[i]);
-                if (activePlantIdx === -1) {
-                     if (plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
-                        plantStates[0] = { stage: 0, pomosTowardsNextStage: 0 };
-                        currentIntentions[0] = ""; activePlantIdx = 0; updatePlantVisual(0);
-                        checkAndPromptForIntention(); return false; 
-                     }
-                     checkAndPromptForIntention(); return false; 
-                }
                 checkAndPromptForIntention(); return false;
             }
             
@@ -1011,17 +1044,14 @@
             }
             
             const controlsContainer = backgroundSoundControlsMain;
-            // const nameDisplay = currentBackgroundSoundNameMain; // Element removed
             
             if (controlsContainer) { 
                 if (sound.key !== 'off') {
                     controlsContainer.classList.remove('hidden');
                     controlsContainer.classList.add('flex'); 
-                    // if(nameDisplay) nameDisplay.textContent = ''; // No longer exists
                 } else {
                     controlsContainer.classList.add('hidden');
                     controlsContainer.classList.remove('flex');
-                    // if(nameDisplay) nameDisplay.textContent = ''; // No longer exists
                 }
             }
         }
@@ -1029,7 +1059,7 @@
         function playCurrentBackgroundSound() {
             stopBackgroundSound(); 
             const sound = BACKGROUND_SOUNDS[currentBackgroundSoundIndex];
-            if (sound.key === 'off') return;
+            if (sound.key === 'off' || !sound.src) return;
 
             audioCtx = getAudioContext();
             if (!audioCtx) return;
@@ -1037,84 +1067,37 @@
                 audioCtx.resume().catch(e => console.error("Error resuming audio context:", e));
             }
 
-            if (sound.src) { // MP3 playback
-                console.log("Attempting to play MP3:", sound.src); // Debug log for path
-                backgroundAudioElement = new Audio(sound.src);
-                backgroundAudioElement.loop = true;
-                
-                if (!backgroundAudioSourceNode || backgroundAudioSourceNode.mediaElement !== backgroundAudioElement) {
-                    if (backgroundAudioSourceNode) { try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */} }
-                    try { 
-                        backgroundAudioSourceNode = audioCtx.createMediaElementSource(backgroundAudioElement);
-                    } catch (e) {
-                        console.error("Error creating media element source for MP3:", e);
-                        return; 
-                    }
-                }
-
-                backgroundGainNode = audioCtx.createGain();
-                let volumeValue = parseFloat(backgroundVolumeSliderMain.value);
-                if (isNaN(volumeValue)) volumeValue = 0.1; 
-                backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
-                
-                if(backgroundAudioSourceNode) { 
-                    backgroundAudioSourceNode.connect(backgroundGainNode);
-                    backgroundGainNode.connect(audioCtx.destination);
-                
-                    backgroundAudioElement.play().catch(error => {
-                        console.error(`Error playing MP3 (${sound.src}). Check path and browser permissions. Original error:`, error);
-                        // Fallback for Alpha/Beta if MP3 fails
-                        if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) {
-                            console.log("MP3 failed, attempting generated fallback for:", sound.name);
-                            playGeneratedBinauralSound(sound);
-                        } else {
-                            currentBackgroundSoundIndex = 0; 
-                            stopBackgroundSound(); 
-                            updateBackgroundSoundToggleVisual();
-                            saveState();
-                        }
-                    });
-                }
-            } else if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) { // Direct generation if no src
-                 console.log("Playing generated sound directly for:", sound.name);
-                 playGeneratedBinauralSound(sound);
-            }
-        }
-
-        function playGeneratedBinauralSound(soundDetails) {
-            // Ensure previous audio element source is stopped if it was playing
-            if (backgroundAudioElement) {
-                backgroundAudioElement.pause();
-                backgroundAudioElement.currentTime = 0;
-            }
-            if (backgroundAudioSourceNode) {
-                try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */}
-            }
+            backgroundAudioElement = new Audio(sound.src);
+            backgroundAudioElement.loop = true;
             
-            audioCtx = getAudioContext(); // Ensure context
-            if (!audioCtx) return;
-            if (audioCtx.state === 'suspended') { 
-                audioCtx.resume().catch(e => console.error("Error resuming audio context for generated sound:", e));
+            if (!backgroundAudioSourceNode || backgroundAudioSourceNode.mediaElement !== backgroundAudioElement) {
+                 if (backgroundAudioSourceNode) { try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */} }
+                try { 
+                    backgroundAudioSourceNode = audioCtx.createMediaElementSource(backgroundAudioElement);
+                } catch (e) {
+                    console.error("Error creating media element source for MP3:", e);
+                    return; 
+                }
             }
 
             backgroundGainNode = audioCtx.createGain();
             let volumeValue = parseFloat(backgroundVolumeSliderMain.value);
-            if (isNaN(volumeValue)) volumeValue = 0.1;
+            if (isNaN(volumeValue)) volumeValue = 0.1; 
             backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
-            backgroundGainNode.connect(audioCtx.destination);
-
-            backgroundFallbackOsc1 = audioCtx.createOscillator();
-            backgroundFallbackOsc2 = audioCtx.createOscillator();
-            backgroundFallbackOsc1.type = 'sine';
-            backgroundFallbackOsc2.type = 'sine';
-            backgroundFallbackOsc1.frequency.setValueAtTime(soundDetails.baseFreq - soundDetails.beatFreq / 2, audioCtx.currentTime);
-            backgroundFallbackOsc2.frequency.setValueAtTime(soundDetails.baseFreq + soundDetails.beatFreq / 2, audioCtx.currentTime);
-            backgroundFallbackOsc1.connect(backgroundGainNode);
-            backgroundFallbackOsc2.connect(backgroundGainNode);
-            backgroundFallbackOsc1.start();
-            backgroundFallbackOsc2.start();
+            
+            if(backgroundAudioSourceNode) { 
+                backgroundAudioSourceNode.connect(backgroundGainNode);
+                backgroundGainNode.connect(audioCtx.destination);
+            
+                backgroundAudioElement.play().catch(error => {
+                    console.error(`Error playing MP3 (${sound.src}). Check path and browser permissions. Original error:`, error);
+                    currentBackgroundSoundIndex = 0; 
+                    stopBackgroundSound(); 
+                    updateBackgroundSoundToggleVisual();
+                    saveState();
+                });
+            }
         }
-
 
         function handleVolumeChange(event) {
             const newVolume = parseFloat(event.target.value);
@@ -1136,14 +1119,6 @@
             }
             if (backgroundAudioSourceNode) {
                 try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */}
-            }
-            if (backgroundFallbackOsc1) { 
-                try { backgroundFallbackOsc1.stop(); backgroundFallbackOsc1.disconnect(); } catch(e) {/* ignore */}
-                backgroundFallbackOsc1 = null; 
-            }
-            if (backgroundFallbackOsc2) { 
-                try { backgroundFallbackOsc2.stop(); backgroundFallbackOsc2.disconnect(); } catch(e) {/* ignore */}
-                backgroundFallbackOsc2 = null; 
             }
             if (backgroundGainNode) {
                 try { backgroundGainNode.disconnect(); } catch(e) {/* ignore */}
