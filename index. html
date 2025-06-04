@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Growth Pomodoro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-family-main: 'Poppins', sans-serif;
+            --bg-color-light: #f3f4f6; 
+            --text-color-light: #1f2937; 
+            --card-bg-light: rgba(255, 255, 255, 0.95);
+            --card-shadow-light: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --primary-accent-light: #4f46e5; 
+            --button-primary-bg-light: #6366f1; 
+            --button-primary-hover-bg-light: #4f46e5; 
+            --button-secondary-bg-light: #6b7280; 
+            --button-secondary-hover-bg-light: #4b5563; 
+            --input-bg-light: #ffffff;
+            --input-border-light: #d1d5db; 
+            --highlight-bg-light: rgba(79, 70, 229, 0.1); 
+            --intention-text-light: #4338ca; 
+            --intention-bg-light: rgba(199, 210, 254, 0.3); 
+
+            --bg-color-dark: #111827; 
+            --text-color-dark: #e5e7eb; 
+            --card-bg-dark: rgba(31, 41, 55, 0.95); 
+            --card-shadow-dark: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.35);
+            --primary-accent-dark: #a5b4fc; 
+            --button-primary-bg-dark: #818cf8; 
+            --button-primary-hover-bg-dark: #6366f1; 
+            --button-secondary-bg-dark: #9ca3af; 
+            --button-secondary-hover-bg-dark: #6b7280; 
+            --input-bg-dark: #374151; 
+            --input-border-dark: #4b5563; 
+            --highlight-bg-dark: rgba(165, 180, 252, 0.15); 
+            --intention-text-dark: #c7d2fe; 
+            --intention-bg-dark: rgba(67, 56, 202, 0.2); 
+        }
+
+        body { font-family: var(--font-family-main); transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; }
+        .timer-text { font-size: 4rem; line-height: 1; font-weight: 700; }
+        .plant-part { transition: opacity 0.7s ease-in-out, visibility 0.7s ease-in-out, transform 0.7s ease-in-out; transform-origin: bottom center; }
+        .hidden-plant-part { opacity: 0; visibility: hidden; transform: scale(0.8); }
+        .visible-plant-part { opacity: 1; visibility: visible; transform: scale(1); }
+        #pot-rect { transition: width 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55), x 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .plant-slot { transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+
+        body { background-color: var(--bg-color-light); color: var(--text-color-light); }
+        #app-container { background-color: var(--card-bg-light); box-shadow: var(--card-shadow-light); }
+        #message-area, #intention-prompt-button { color: var(--primary-accent-light); }
+        .timer-text { color: var(--text-color-light); }
+        #start-pause-button { background-color: var(--button-primary-bg-light); color: white; }
+        #start-pause-button:hover { background-color: var(--button-primary-hover-bg-light); }
+        #start-pause-button:disabled { background-color: #9ca3af; cursor: not-allowed; } 
+        #reset-button { background-color: var(--button-secondary-bg-light); color: white; }
+        #reset-button:hover { background-color: var(--button-secondary-hover-bg-light); }
+        select, input[type="range"], input[type="text"] { background-color: var(--input-bg-light); border-color: var(--input-border-light); color: var(--text-color-light); }
+        .modal-content { background-color: var(--card-bg-light); color: var(--text-color-light); }
+        #modal-ok-button { background-color: var(--button-primary-bg-light); color: white; }
+        #modal-ok-button:hover { background-color: var(--button-primary-hover-bg-light); }
+        .message-highlight-base { transition: background-color 0.3s ease-out; }
+        .message-highlight-active { background-color: var(--highlight-bg-light); animation: highlight-fade-light 1.5s ease-out; }
+        @keyframes highlight-fade-light { 0% { background-color: var(--highlight-bg-light); } 100% { background-color: transparent; } }
+        #intention-display { color: var(--intention-text-light); background-color: var(--intention-bg-light); }
+        
+        body.dark { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
+        body.dark #app-container { background-color: var(--card-bg-dark); box-shadow: var(--card-shadow-dark); }
+        body.dark #message-area, body.dark #intention-prompt-button { color: var(--primary-accent-dark); }
+        body.dark .timer-text { color: var(--text-color-dark); }
+        body.dark #start-pause-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
+        body.dark #start-pause-button:hover { background-color: var(--button-primary-hover-bg-dark); }
+        body.dark #start-pause-button:disabled { background-color: #4b5563; } 
+        body.dark #reset-button { background-color: var(--button-secondary-bg-dark); color: var(--bg-color-dark); }
+        body.dark #reset-button:hover { background-color: var(--button-secondary-hover-bg-dark); }
+        body.dark select, body.dark input[type="range"], body.dark input[type="text"] { background-color: var(--input-bg-dark); border-color: var(--input-border-dark); color: var(--text-color-dark); }
+        body.dark .modal-content { background-color: var(--card-bg-dark); color: var(--text-color-dark); }
+        body.dark #modal-ok-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
+        body.dark #modal-ok-button:hover { background-color: var(--button-primary-hover-bg-dark); }
+        body.dark .pomodoro-count-bg { background-color: rgba(255, 255, 255, 0.1); }
+        body.dark button.icon-button { color: var(--text-color-dark); }
+        body.dark button.icon-button:hover { background-color: rgba(255, 255, 255, 0.1); }
+        body.dark .message-highlight-active { background-color: var(--highlight-bg-dark); animation: highlight-fade-dark 1.5s ease-out; }
+        @keyframes highlight-fade-dark { 0% { background-color: var(--highlight-bg-dark); } 100% { background-color: transparent; } }
+        body.dark #intention-display { color: var(--intention-text-dark); background-color: var(--intention-bg-dark); }
+
+
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); }
+        .modal-content { margin: 15% auto; padding: 20px; border: 1px solid #4b5563; width: 80%; max-width: 400px; border-radius: 8px; text-align: center; }
+        .active-pressed { transform: scale(0.95); filter: brightness(0.9); }
+        .pomodoro-count-bg { background-color: rgba(0, 0, 0, 0.05); padding: 0.25rem 0.5rem; border-radius: 0.375rem; display: inline-block; white-space: nowrap; }
+        .icon-button { padding: 0.5rem; border-radius: 9999px; transition: background-color 0.2s, transform 0.1s; }
+        .icon-button:hover { background-color: #e5e7eb; }
+        body.dark .icon-button:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .icon-button:active { transform: scale(0.90); }
+        
+        .main-settings-dropdown {
+            display: none; 
+            position: absolute; 
+            top: calc(100% + 0.25rem); 
+            right: 0; 
+            z-index: 50; 
+            width: 280px; 
+            padding: 0.75rem; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .main-settings-dropdown.open { display: block; }
+        body #app-container .main-settings-dropdown { background-color: var(--card-bg-light); border: 1px solid var(--input-border-light); }
+        body.dark #app-container .main-settings-dropdown { background-color: var(--card-bg-dark); border: 1px solid var(--input-border-dark); }
+        
+        .advanced-settings-panel-inner { 
+             max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out, padding-top 0.4s ease-in-out, margin-top 0.4s ease-in-out;
+        }
+        .advanced-settings-panel-inner.open {
+            max-height: 200px; 
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+            border-top: 1px solid var(--input-border-light);
+        }
+        body.dark .advanced-settings-panel-inner.open { border-top-color: var(--input-border-dark); }
+
+
+        select.compact-select {
+            padding-top: 0.25rem; 
+            padding-bottom: 0.25rem;
+            padding-left: 0.375rem; 
+            padding-right: 1.5rem; 
+            width: auto; 
+            min-width: 60px; 
+            flex-grow: 1; 
+            border-radius: 0.375rem; 
+            font-size: 0.875rem; 
+            line-height: 1.25rem;
+            border-width: 1px; 
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
+        }
+        .duration-setting-label {
+            font-size: 0.875rem; 
+            margin-right: 0.25rem; 
+            white-space: nowrap;
+        }
+        
+        input[type="range"].volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px; 
+            height: 8px; 
+            border-radius: 4px;
+            background: #d3d3d3; 
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        input[type="range"].volume-slider:hover { opacity: 1; }
+        input[type="range"].volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px; 
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary-accent-light);
+            cursor: pointer;
+        }
+        input[type="range"].volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary-accent-light);
+            cursor: pointer;
+            border: none;
+        }
+        body.dark input[type="range"].volume-slider::-webkit-slider-thumb { background: var(--primary-accent-dark); }
+        body.dark input[type="range"].volume-slider::-moz-range-thumb { background: var(--primary-accent-dark); }
+        body.dark input[type="range"].volume-slider { background: #4b5563; } 
+        #intention-display {
+            font-size: 0.875rem; 
+            margin-top: 0.25rem; 
+            margin-bottom: 0.5rem; 
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem; 
+            min-height: 1.75rem; 
+            font-style: italic;
+            text-align: center;
+        }
+        #intention-input {
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        #animated-highlight {
+            position: absolute;
+            border-radius: 0.375rem;
+            background-color: var(--highlight-bg-light);
+            transition: top 0.5s ease-in-out, left 0.5s ease-in-out, width 0.5s ease-in-out, height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none; 
+            z-index: 0; 
+        }
+        body.dark #animated-highlight { background-color: var(--highlight-bg-dark); }
+
+
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div id="app-container" class="w-full max-w-lg bg-white/80 backdrop-blur-md shadow-xl rounded-lg p-6 relative">
+        <div id="animated-highlight"></div>
+        <header class="mb-4">
+            <div class="flex justify-between items-start mb-3"> 
+                <div class="duration-controls-stacked space-y-1 max-w-[180px] sm:max-w-[200px]"> 
+                    <div class="pomodoro-count-bg text-left">
+                        <span class="text-xs sm:text-sm">🍅 Pomodoros: <span id="session-count" class="font-bold">0</span></span>
+                    </div>
+                    <div class="flex items-center">
+                        <label for="work-duration" class="duration-setting-label">Focus:</label>
+                        <select id="work-duration" class="compact-select flex-grow"> 
+                            <option value="0.1">0.1m</option><option value="1">1m</option><option value="15">15m</option><option value="20">20m</option>
+                            <option value="25" selected>25m</option><option value="30">30m</option><option value="45">45m</option><option value="50">50m</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <label for="break-duration" class="duration-setting-label">Break:</label>
+                        <select id="break-duration" class="compact-select flex-grow"> 
+                            <option value="0.1">0.1m</option><option value="1">1m</option><option value="5" selected>5m</option><option value="10">10m</option><option value="15">15m</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="relative inline-block"> 
+                    <button id="main-settings-toggle" title="Settings" aria-label="Settings" class="icon-button text-xl">⚙️</button>
+                    <div id="main-settings-dropdown" class="main-settings-dropdown">
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Theme:</span>
+                                <button id="theme-toggle-button" title="Toggle Dark Mode" aria-label="Toggle Dark Mode" class="icon-button text-xl ml-auto">🌓</button>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Alert Sound:</span>
+                                <button id="alert-sound-toggle-button" title="Toggle Alert Sound" aria-label="Toggle Alert Sound" class="icon-button text-xl ml-auto">🔔</button>
+                            </div>
+                             <div class="flex flex-col items-start">
+                                <div class="flex justify-between items-center w-full">
+                                    <span class="font-medium">Background Sound:</span>
+                                    <button id="background-sound-toggle-dropdown" title="Toggle Background Sound" aria-label="Toggle Background Sound" class="icon-button text-xl ml-auto">🎧</button>
+                                </div>
+                                <div id="background-sound-controls-dropdown" class="hidden items-center mt-1 pl-2 w-full">
+                                    <span id="current-background-sound-name-dropdown" class="text-xs mr-2 truncate"></span>
+                                    <input type="range" id="background-volume-slider-dropdown" min="0" max="1" step="0.01" value="0.1" class="volume-slider flex-grow">
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Pop-up Alerts:</span>
+                                <button id="overlay-alerts-toggle" title="Toggle Pop-up Alerts" aria-label="Toggle Pop-up Alerts" class="icon-button text-xl ml-auto">💬</button>
+                            </div>
+                            <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                <button id="advanced-settings-toggle-inner" title="Breaks settings" aria-label="Breaks settings" class="w-full text-left flex justify-between items-center py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-1">
+                                    <span>Breaks settings</span> <span class="text-xl">☕</span>
+                                </button>
+                                <div id="advanced-settings-panel-inner" class="advanced-settings-panel-inner pl-2">
+                                    <div>
+                                        <label for="long-break-interval" class="block mb-1 font-medium text-left">Long Break After:</label>
+                                        <select id="long-break-interval" class="w-full p-2 border rounded-md shadow-sm text-sm compact-select">
+                                            <option value="2">2 Poms</option><option value="3">3 Poms</option>
+                                            <option value="4" selected>4 Poms</option><option value="5">5 Poms</option>
+                                            <option value="6">6 Poms</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label for="long-break-duration" class="block mb-1 font-medium text-left">Long Break For:</label>
+                                         <select id="long-break-duration" class="w-full p-2 border rounded-md shadow-sm text-sm compact-select">
+                                            <option value="10">10m</option><option value="15" selected>15m</option> <option value="20">20m</option>
+                                            <option value="25">25m</option><option value="30">30m</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="message-area-container" class="text-lg font-semibold h-10 mb-1 rounded-md px-2 text-center flex flex-col justify-center items-center relative">
+                <div id="message-area" class="message-highlight-base">Ready?</div>
+                <div id="intention-input-area" class="hidden w-full max-w-xs mt-1">
+                    <input type="text" id="intention-input" placeholder="My focus for this bloom..." maxlength="70" class="w-full border p-1.5 text-sm rounded-md shadow-sm">
+                    <button id="set-intention-button" class="mt-1 bg-indigo-500 hover:bg-indigo-600 text-white text-xs py-1 px-3 rounded-md shadow">Set</button>
+                </div>
+            </div>
+             <div id="intention-display" class="text-center"></div>
+        </header>
+        
+        <div id="plant-display-area" class="mb-1 h-48 w-full mx-auto">
+            <svg id="plant-svg" viewBox="0 0 300 100" class="w-full h-full">
+                <rect id="pot-rect" x="105" y="90" width="90" height="10" rx="3" ry="3" fill="#A0522D" />
+                <g id="plant-slot-0" class="plant-slot" transform="translate(150, 0)">
+                    <circle data-part="seed" cx="0" cy="83" r="7" fill="#8B4513" class="plant-part hidden-plant-part"/>
+                    <line data-part="stem" x1="0" y1="83" x2="0" y2="65" stroke="#228B22" stroke-width="4" class="plant-part hidden-plant-part"/>
+                    <ellipse data-part="leaf1" cx="-10" cy="67" rx="12" ry="6" fill="#32CD32" transform="rotate(-30 -10 67)" class="plant-part hidden-plant-part"/>
+                    <ellipse data-part="leaf2" cx="10" cy="63" rx="12" ry="6" fill="#32CD32" transform="rotate(30 10 63)" class="plant-part hidden-plant-part"/>
+                    <g data-part="flower" class="plant-part hidden-plant-part">
+                        <circle cx="0" cy="50" r="10" fill="#FFC0CB"/><circle cx="0" cy="50" r="5" fill="#FFFF00"/>
+                    </g>
+                </g>
+                <g id="plant-slot-1" class="plant-slot" transform="translate(-1000, -1000)">
+                    <circle data-part="seed" cx="0" cy="83" r="7" fill="#8B4513" class="plant-part hidden-plant-part"/>
+                    <line data-part="stem" x1="0" y1="83" x2="0" y2="65" stroke="#228B22" stroke-width="4" class="plant-part hidden-plant-part"/>
+                    <ellipse data-part="leaf1" cx="-10" cy="67" rx="12" ry="6" fill="#32CD32" transform="rotate(-30 -10 67)" class="plant-part hidden-plant-part"/>
+                    <ellipse data-part="leaf2" cx="10" cy="63" rx="12" ry="6" fill="#32CD32" transform="rotate(30 10 63)" class="plant-part hidden-plant-part"/>
+                    <g data-part="flower" class="plant-part hidden-plant-part">
+                         <circle cx="0" cy="50" r="10" fill="#FFC0CB"/><circle cx="0" cy="50" r="5" fill="#FFFF00"/>
+                    </g>
+                </g>
+                <g id="plant-slot-2" class="plant-slot" transform="translate(-1000, -1000)">
+                     <circle data-part="seed" cx="0" cy="83" r="7" fill="#8B4513" class="plant-part hidden-plant-part"/>
+                    <line data-part="stem" x1="0" y1="83" x2="0" y2="65" stroke="#228B22" stroke-width="4" class="plant-part hidden-plant-part"/>
+                    <ellipse data-part="leaf1" cx="-10" cy="67" rx="12" ry="6" fill="#32CD32" transform="rotate(-30 -10 67)" class="plant-part hidden-plant-part"/>
+                    <ellipse data-part="leaf2" cx="10" cy="63" rx="12" ry="6" fill="#32CD32" transform="rotate(30 10 63)" class="plant-part hidden-plant-part"/>
+                    <g data-part="flower" class="plant-part hidden-plant-part">
+                        <circle cx="0" cy="50" r="10" fill="#FFC0CB"/><circle cx="0" cy="50" r="5" fill="#FFFF00"/>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        <div id="plant-stage-emoji-display" class="text-3xl mb-4 h-10 flex items-center justify-center"></div>
+        <div id="timer-display" class="timer-text font-bold mb-5 text-center">25:00</div>
+        
+        <div class="flex justify-center items-center space-x-3 mb-5">
+            <button id="start-pause-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Start</button>
+            <button id="reset-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Reset</button>
+        </div>
+    </div>
+
+    <div id="notification-modal" class="modal">
+        <div class="modal-content">
+            <p id="modal-message" class="text-lg mb-4"></p>
+            <button id="modal-ok-button" class="font-semibold py-2 px-4 rounded-lg transition-all duration-150 ease-in-out active:scale-95 active:brightness-90">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const timerDisplay = document.getElementById('timer-display');
+        const startPauseButton = document.getElementById('start-pause-button');
+        const resetButton = document.getElementById('reset-button');
+        const workDurationSelect = document.getElementById('work-duration');
+        const breakDurationSelect = document.getElementById('break-duration');
+        const sessionCountDisplay = document.getElementById('session-count');
+        const messageAreaContainer = document.getElementById('message-area-container');
+        const messageArea = document.getElementById('message-area');
+        const intentionInputArea = document.getElementById('intention-input-area');
+        const intentionInput = document.getElementById('intention-input');
+        const setIntentionButton = document.getElementById('set-intention-button');
+        const intentionDisplay = document.getElementById('intention-display');
+        const animatedHighlight = document.getElementById('animated-highlight');
+        const plantSlots = [ document.getElementById('plant-slot-0'), document.getElementById('plant-slot-1'), document.getElementById('plant-slot-2') ];
+        const potRect = document.getElementById('pot-rect');
+        const plantStageEmojiDisplay = document.getElementById('plant-stage-emoji-display');
+        
+        const mainSettingsToggle = document.getElementById('main-settings-toggle');
+        const mainSettingsDropdown = document.getElementById('main-settings-dropdown');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const alertSoundToggleButton = document.getElementById('alert-sound-toggle-button');
+        const backgroundSoundToggleDropdown = document.getElementById('background-sound-toggle-dropdown'); 
+        const backgroundSoundControlsDropdown = document.getElementById('background-sound-controls-dropdown');
+        const currentBackgroundSoundNameDropdown = document.getElementById('current-background-sound-name-dropdown');
+        const backgroundVolumeSliderDropdown = document.getElementById('background-volume-slider-dropdown');
+        const overlayAlertsToggle = document.getElementById('overlay-alerts-toggle');
+        const advancedSettingsToggleInner = document.getElementById('advanced-settings-toggle-inner'); 
+        const advancedSettingsPanelInner = document.getElementById('advanced-settings-panel-inner'); 
+        const longBreakIntervalSelect = document.getElementById('long-break-interval'); 
+        const longBreakDurationSelect = document.getElementById('long-break-duration'); 
+        
+        const body = document.body;
+        const notificationModal = document.getElementById('notification-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalOkButton = document.getElementById('modal-ok-button');
+
+        // App State
+        let workDuration = 25 * 60; 
+        let breakDuration = 5 * 60; 
+        let currentTime = workDuration;
+        let isWorkSession = true;
+        let isRunning = false;
+        let intervalId = null;
+        let totalPomodoros = 0;
+        let pomodorosInCycle = 0; 
+        
+        const MAX_PLANTS = 3;
+        const STAGES_PER_PLANT = 5; 
+        const POMODOROS_PER_STAGE = 1;
+        let plantStates = []; 
+        let currentIntentions = []; 
+
+        const PLANT_EMOJIS_BY_STAGE = ['🌱', '🌿', '🪴', '🌸', '🌳'];
+        const PLANT_SLOT_CONFIGS = {
+            1: { transforms: [{ x: 150, y: 0 }], activeSlotIndices: [0] },
+            2: { transforms: [{ x: 100, y: 0 }, { x: 200, y: 0 }], activeSlotIndices: [0, 1] },
+            3: { transforms: [{ x: 75, y: 0 }, { x: 150, y: 0 }, { x: 225, y: 0 }], activeSlotIndices: [0, 1, 2] }
+        };
+        const POT_WIDTHS = { 1: 90, 2: 190, 3: 290 }; 
+        const POT_X_POS = { 1: 105, 2: 55, 3: 5 };
+
+        let audioCtx;
+        const ALERT_SOUNDS = [
+            { key: 'beep', emoji: '🔔', name: 'Beep' }, { key: 'chime', emoji: '🎶', name: 'Chime' },
+            { key: 'alert', emoji: '📢', name: 'Alert' } 
+        ];
+        let currentAlertSoundIndex = 0;
+
+        const BACKGROUND_SOUNDS = [
+            { key: 'off', name: 'Off', emoji: '🎧', remark: ''},
+            { key: 'alpha', name: 'Alpha Waves', emoji: '🧠', remark: '(mild focus)', baseFreq: 200, beatFreq: 10 }, 
+            { key: 'beta', name: 'Beta Waves', emoji: '💡', remark: '(intense focus)', baseFreq: 200, beatFreq: 20 },  
+        ];
+        let currentBackgroundSoundIndex = 0;
+        let backgroundGainNode;
+        let backgroundOscillator1;
+        let backgroundOscillator2; 
+        
+        let isDarkMode = true; // Default to dark mode
+        let longBreakInterval = 4; 
+        let longBreakDuration = 15 * 60; 
+        let showOverlayAlerts = true; 
+        const INTENTION_CHAR_LIMIT = 70;
+
+        // --- Initialization ---
+        function init() {
+            loadState(); 
+            
+            updateTimerDisplay();
+            updateAllPlantsVisual(); 
+            updateSessionCount();
+            applyTheme(); // Apply theme based on loaded or default isDarkMode
+            updateThemeToggleIconVisual(); 
+            updateAlertSoundToggleVisual();
+            updateBackgroundSoundToggleVisual(); 
+            updateOverlayAlertsToggleVisual(); 
+            updatePotAndPlantPositions(getActivePlantCount(), false); 
+            checkAndPromptForIntention();
+
+
+            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, backgroundSoundToggleDropdown, overlayAlertsToggle, advancedSettingsToggleInner, setIntentionButton].forEach(button => {
+                if(button) { 
+                    button.addEventListener('mousedown', () => button.classList.add('active-pressed'));
+                    button.addEventListener('mouseup', () => button.classList.remove('active-pressed'));
+                    button.addEventListener('mouseleave', () => button.classList.remove('active-pressed'));
+                }
+            });
+
+            startPauseButton.addEventListener('click', toggleTimer);
+            resetButton.addEventListener('click', handleReset);
+            workDurationSelect.addEventListener('change', () => { updateDurations(); saveState(); });
+            breakDurationSelect.addEventListener('change', () => { updateDurations(); saveState(); });
+            
+            mainSettingsToggle.addEventListener('click', (event) => {
+                event.stopPropagation();
+                mainSettingsDropdown.classList.toggle('open');
+            });
+            themeToggleButton.addEventListener('click', toggleTheme);
+            alertSoundToggleButton.addEventListener('click', cycleAlertSound);
+            backgroundSoundToggleDropdown.addEventListener('click', cycleBackgroundSound); 
+            backgroundVolumeSliderDropdown.addEventListener('input', (e) => { 
+                if (backgroundGainNode) {
+                    if (!audioCtx) audioCtx = getAudioContext(); 
+                    if (audioCtx) { 
+                         backgroundGainNode.gain.setValueAtTime(parseFloat(e.target.value), audioCtx.currentTime);
+                    }
+                }
+                saveState(); 
+            });
+            overlayAlertsToggle.addEventListener('click', toggleOverlayAlerts);
+            advancedSettingsToggleInner.addEventListener('click', (event) => {
+                 event.stopPropagation(); 
+                 advancedSettingsPanelInner.classList.toggle('open');
+            });
+
+            longBreakIntervalSelect.addEventListener('change', () => { updateAdvancedSettings(); saveState(); });
+            longBreakDurationSelect.addEventListener('change', () => { updateAdvancedSettings(); saveState(); });
+            
+            setIntentionButton.addEventListener('click', handleSetIntention);
+            intentionInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSetIntention();
+                }
+            });
+            modalOkButton.addEventListener('click', () => {
+                notificationModal.style.display = 'none';
+                if (!isRunning && currentTime <= 0) { 
+                    // If timer was at 0 and modal dismissed, next session should be ready to start
+                    // The sessionEnd function should have already set the button to 'Start' if needed
+                    // and prepared the next session's time.
+                    // We only call startTimer if it's not disabled (e.g. intention needed)
+                    if (!startPauseButton.disabled) {
+                        // Check if it's appropriate to auto-start or just ensure UI is correct
+                        if (startPauseButton.textContent === 'Start') {
+                             // UI is ready for manual start.
+                        } else if (startPauseButton.textContent === 'Resume' && !isRunning) {
+                            // This case should ideally not happen if sessionEnd logic is correct
+                            // but as a fallback, allow resume.
+                             startTimer();
+                        }
+                    }
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!mainSettingsDropdown.contains(event.target) && !mainSettingsToggle.contains(event.target) && mainSettingsDropdown.classList.contains('open')) {
+                    mainSettingsDropdown.classList.remove('open');
+                    advancedSettingsPanelInner.classList.remove('open'); 
+                }
+            });
+
+            workDurationSelect.value = workDuration / 60;
+            breakDurationSelect.value = breakDuration / 60;
+            longBreakIntervalSelect.value = longBreakInterval; 
+            longBreakDurationSelect.value = longBreakDuration / 60; 
+            backgroundVolumeSliderDropdown.value = backgroundGainNode ? backgroundGainNode.gain.value : 0.1; 
+        }
+
+        // --- LocalStorage ---
+        function saveState() {
+            const state = {
+                workDuration: workDurationSelect.value, breakDuration: breakDurationSelect.value,
+                totalPomodoros, pomodorosInCycle, plantStates, currentIntentions, 
+                currentAlertSoundIndex, isDarkMode,
+                longBreakInterval: longBreakIntervalSelect.value, 
+                longBreakDuration: longBreakDurationSelect.value, 
+                currentBackgroundSoundIndex,
+                backgroundVolume: parseFloat(backgroundVolumeSliderDropdown.value),
+                showOverlayAlerts 
+            };
+            localStorage.setItem('pomodoroGrowthAppV14', JSON.stringify(state)); 
+        }
+
+        function loadState() {
+            const savedState = localStorage.getItem('pomodoroGrowthAppV14'); 
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                workDurationSelect.value = state.workDuration || 25;
+                breakDurationSelect.value = state.breakDuration || 5;
+                totalPomodoros = state.totalPomodoros || 0;
+                pomodorosInCycle = state.pomodorosInCycle || 0;
+                plantStates = state.plantStates || Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
+                currentIntentions = state.currentIntentions || Array(MAX_PLANTS).fill("");
+
+                if (plantStates.length < MAX_PLANTS) {
+                    plantStates = plantStates.concat(Array(MAX_PLANTS - plantStates.length).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 })));
+                    currentIntentions = currentIntentions.concat(Array(MAX_PLANTS - currentIntentions.length).fill(""));
+                } else if (plantStates.length > MAX_PLANTS) {
+                    plantStates = plantStates.slice(0, MAX_PLANTS);
+                    currentIntentions = currentIntentions.slice(0, MAX_PLANTS);
+                }
+
+                currentAlertSoundIndex = state.currentAlertSoundIndex || 0;
+                isDarkMode = typeof state.isDarkMode === 'boolean' ? state.isDarkMode : true; // Default to true if not set
+                longBreakIntervalSelect.value = state.longBreakInterval || 4;
+                longBreakDurationSelect.value = state.longBreakDuration || 15;
+                currentBackgroundSoundIndex = state.currentBackgroundSoundIndex || 0;
+                backgroundVolumeSliderDropdown.value = state.backgroundVolume || 0.1;
+                showOverlayAlerts = typeof state.showOverlayAlerts === 'boolean' ? state.showOverlayAlerts : true;
+
+
+            } else { 
+                isDarkMode = true; // Default to dark mode for new users
+                plantStates = Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
+                currentIntentions = Array(MAX_PLANTS).fill("");
+                backgroundVolumeSliderDropdown.value = 0.1; 
+                showOverlayAlerts = true;
+            }
+            updateDurations(); 
+            updateAdvancedSettings();
+            currentTime = isWorkSession ? workDuration : (pomodorosInCycle >= longBreakInterval ? longBreakDuration : breakDuration);
+        }
+
+        // --- Intention Logic ---
+        function getActivePlantIndexForIntention() {
+            let activeIndex = plantStates.findIndex(p => p.stage < STAGES_PER_PLANT -1 && currentIntentions[plantStates.indexOf(p)]);
+            if (activeIndex === -1) {
+                 activeIndex = plantStates.findIndex((p,i) => p.stage === 0 && p.pomosTowardsNextStage === 0 && !currentIntentions[i]);
+                 if(activeIndex === -1) { 
+                    activeIndex = plantStates.findIndex((p,i) => p.stage === 0 && !currentIntentions[i]);
+                    if(activeIndex === -1 && plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
+                        activeIndex = 0; 
+                    } else if (activeIndex === -1) {
+                        activeIndex = 0; 
+                    }
+                 }
+            }
+            return activeIndex !== -1 ? activeIndex : 0;
+        }
+        
+        function positionHighlight(targetElement) {
+            if (!targetElement || !targetElement.offsetParent) { 
+                animatedHighlight.style.opacity = '0';
+                return;
+            }
+            const appContainer = document.getElementById('app-container');
+            const appContainerRect = appContainer.getBoundingClientRect();
+            const targetRect = targetElement.getBoundingClientRect();
+
+            animatedHighlight.style.left = `${targetRect.left - appContainerRect.left + appContainer.scrollLeft}px`;
+            animatedHighlight.style.top = `${targetRect.top - appContainerRect.top + appContainer.scrollTop}px`;
+            animatedHighlight.style.width = `${targetRect.width}px`;
+            animatedHighlight.style.height = `${targetRect.height}px`;
+            animatedHighlight.style.opacity = '1';
+        }
+
+
+        function checkAndPromptForIntention() {
+            const activePlantIdx = getActivePlantIndexForIntention();
+            const plant = plantStates[activePlantIdx];
+            
+            if (plant && plant.stage === 0 && !currentIntentions[activePlantIdx]) {
+                messageArea.innerHTML = `<button id="intention-prompt-button" class="font-semibold hover:underline">+ Add Intention for this Bloom</button>`;
+                const promptButton = document.getElementById('intention-prompt-button');
+                if(promptButton) { 
+                    promptButton.addEventListener('click', showIntentionInput);
+                    setTimeout(() => positionHighlight(promptButton), 50); 
+                }
+                intentionInputArea.classList.add('hidden');
+                intentionDisplay.textContent = '';
+                startPauseButton.disabled = true;
+                startPauseButton.textContent = 'Start'; // Ensure it says Start when disabled for intention
+            } else if (plant && currentIntentions[activePlantIdx]) {
+                messageArea.textContent = isRunning ? messageArea.textContent : "Ready?"; 
+                intentionInputArea.classList.add('hidden');
+                intentionDisplay.textContent = `Focus: ${currentIntentions[activePlantIdx]}`;
+                startPauseButton.disabled = false;
+                if (!isRunning) startPauseButton.textContent = 'Start'; // If not running, should say Start
+                setTimeout(() => positionHighlight(intentionDisplay), 50); 
+            } else {
+                 messageArea.textContent = "Ready?";
+                 intentionInputArea.classList.add('hidden');
+                 intentionDisplay.textContent = '';
+                 startPauseButton.disabled = false; 
+                 if (!isRunning) startPauseButton.textContent = 'Start';
+                 animatedHighlight.style.opacity = '0';
+            }
+        }
+
+        function showIntentionInput() {
+            messageArea.textContent = "Set your focus:";
+            intentionInputArea.classList.remove('hidden');
+            intentionInput.value = '';
+            intentionInput.focus();
+            setTimeout(() => positionHighlight(intentionInputArea), 50);
+        }
+
+        function handleSetIntention() {
+            const activePlantIdx = getActivePlantIndexForIntention();
+            const intentionText = intentionInput.value.trim();
+            if (intentionText && intentionText.length <= INTENTION_CHAR_LIMIT) {
+                currentIntentions[activePlantIdx] = intentionText;
+                intentionDisplay.textContent = `Focus: ${intentionText}`;
+                intentionInputArea.classList.add('hidden');
+                messageArea.textContent = "Ready?"; 
+                startPauseButton.disabled = false;
+                startPauseButton.textContent = 'Start';
+                saveState();
+                setTimeout(() => positionHighlight(intentionDisplay), 50); 
+            } else if (intentionText.length > INTENTION_CHAR_LIMIT) {
+                showNotification(`Intention too long! Max ${INTENTION_CHAR_LIMIT} chars.`);
+            } else {
+                 showNotification(`Please set an intention.`);
+            }
+        }
+
+
+        // --- Timer Logic ---
+        function toggleTimer() { 
+            const activePlantIdx = getActivePlantIndexForIntention();
+            if (plantStates[activePlantIdx] && plantStates[activePlantIdx].stage === 0 && !currentIntentions[activePlantIdx] && !isRunning) {
+                showIntentionInput();
+                return;
+            }
+            if (isRunning) pauseTimer(); else startTimer(); 
+        }
+
+        function startTimer() {
+            if (startPauseButton.disabled) return; 
+            if (intervalId) { clearInterval(intervalId); intervalId = null; }
+
+            if (currentTime <= 0) { 
+                 if (isWorkSession) { currentTime = workDuration; } 
+                 else { currentTime = (pomodorosInCycle >= longBreakInterval) ? longBreakDuration : breakDuration; }
+            }
+            isRunning = true;
+            startPauseButton.textContent = 'Pause';
+            intentionInputArea.classList.add('hidden'); 
+            animatedHighlight.style.opacity = '0'; 
+            const currentWorkVal = workDurationSelect.value;
+            const currentBreakVal = breakDurationSelect.value;
+            const currentLongBreakVal = longBreakDurationSelect.value;
+
+            if (isWorkSession) { updateMessageArea(`Focusing for ${currentWorkVal}m...`); } 
+            else {
+                if (pomodorosInCycle >= longBreakInterval && isWorkSession === false) { 
+                    updateMessageArea(`Long Break (${currentLongBreakVal}m)`); 
+                } else {
+                    updateMessageArea(`Break Time! (${currentBreakVal}m)`); 
+                }
+            }
+            
+            intervalId = setInterval(() => {
+                currentTime--;
+                updateTimerDisplay();
+                if (currentTime <= 0) {
+                    sessionEnd();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isRunning = false; clearInterval(intervalId); intervalId = null; 
+            startPauseButton.textContent = 'Resume'; updateMessageArea('Paused');
+            checkAndPromptForIntention(); 
+        }
+
+        function handleReset() {
+            pauseTimer();
+            const confirmReset = window.confirm("Are you sure you want to reset ALL progress (Pomodoros, plants, settings)?");
+            if (confirmReset) {
+                isWorkSession = true; pomodorosInCycle = 0; totalPomodoros = 0;
+                plantStates = Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
+                currentIntentions = Array(MAX_PLANTS).fill("");
+                
+                workDurationSelect.value = 25; breakDurationSelect.value = 5;
+                longBreakIntervalSelect.value = 4; longBreakDurationSelect.value = 15;
+                mainSettingsDropdown.classList.remove('open'); 
+                advancedSettingsPanelInner.classList.remove('open');
+                currentBackgroundSoundIndex = 0; 
+                stopBackgroundSound();
+                updateBackgroundSoundToggleVisual();
+                showOverlayAlerts = true; updateOverlayAlertsToggleVisual();
+                
+                updateDurations(); updateAdvancedSettings();
+                currentTime = workDuration;
+
+                updateTimerDisplay(); updateAllPlantsVisual(); updateSessionCount();
+                updatePlantStageEmojiDisplay();
+                updatePotAndPlantPositions(getActivePlantCount(), true); 
+                checkAndPromptForIntention(); 
+                saveState();
+            } else {
+                 if (startPauseButton.textContent === 'Resume') { /* no-op */ } 
+                 else if (startPauseButton.textContent === 'Pause') { if(!startPauseButton.disabled) startTimer(); }
+            }
+        }
+        
+        function updateDurations() {
+            workDuration = parseFloat(workDurationSelect.value) * 60;
+            breakDuration = parseFloat(breakDurationSelect.value) * 60;
+            if (!isRunning) { 
+                currentTime = isWorkSession ? workDuration : (pomodorosInCycle >= longBreakInterval ? longBreakDuration : breakDuration);
+                updateTimerDisplay();
+            }
+        }
+        
+        function updateAdvancedSettings() {
+            longBreakInterval = parseInt(longBreakIntervalSelect.value);
+            longBreakDuration = parseInt(longBreakDurationSelect.value) * 60;
+            if (!isRunning && !isWorkSession && pomodorosInCycle >= longBreakInterval) { 
+                currentTime = longBreakDuration; 
+                updateTimerDisplay();
+            }
+        }
+
+        function sessionEnd() {
+            clearInterval(intervalId); intervalId = null; isRunning = false; 
+            startPauseButton.textContent = 'Start'; // Explicitly set to Start after session ends
+            playAlertSound();
+
+            const currentWorkVal = workDurationSelect.value;
+            const currentBreakVal = breakDurationSelect.value;
+            const currentLongBreakVal = longBreakDurationSelect.value;
+            let activePlantIdx = getActivePlantIndexForIntention(); 
+
+
+            if (isWorkSession) {
+                totalPomodoros++; pomodorosInCycle++;
+                updateSessionCount(); 
+                const plantGrew = advancePlantGrowth(); 
+                
+                isWorkSession = false; 
+                if (pomodorosInCycle >= longBreakInterval) {
+                    currentTime = longBreakDuration;
+                    showNotification(`Long Break! Relax for ${currentLongBreakVal}m.`); 
+                    updateMessageArea(`Long Break (${currentLongBreakVal}m)`);
+                    pomodorosInCycle = 0; 
+                } else {
+                    currentTime = breakDuration;
+                    showNotification(`Focus complete! Starting ${currentBreakVal}m break.`); 
+                    updateMessageArea(`Break Time! (${currentBreakVal}m)`);
+                }
+                if (plantStates[activePlantIdx] && plantStates[activePlantIdx].stage === STAGES_PER_PLANT - 1 && plantGrew) {
+                    if (plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
+                        plantStates[0] = { stage: 0, pomosTowardsNextStage: 0 };
+                        currentIntentions[0] = "";
+                        updatePlantVisual(0);
+                    } else {
+                        currentIntentions[activePlantIdx] = ""; 
+                    }
+                }
+            } else { 
+                isWorkSession = true; 
+                currentTime = workDuration;
+                showNotification(`Break's over! Starting ${currentWorkVal}m focus.`); 
+                updateMessageArea(`Focus Time! (${currentWorkVal}m)`);
+            }
+            checkAndPromptForIntention(); 
+            saveState(); 
+            updateTimerDisplay(); 
+            
+            // Auto-start logic refinement
+            if ((notificationModal.style.display === 'none' || !notificationModal.style.display) || !showOverlayAlerts) {
+                 if (!startPauseButton.disabled) {
+                    // If auto-starting, the button should immediately reflect 'Pause'
+                    startTimer(); // This will set it to 'Pause'
+                 }
+            } else {
+                // If modal is shown, button should remain 'Start' until modal is dismissed and timer potentially auto-starts
+                startPauseButton.textContent = 'Start';
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(currentTime / 60);
+            const seconds = currentTime % 60;
+            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.title = `${timerDisplay.textContent} - ${isWorkSession ? "Focus" : "Break"}`;
+        }
+
+        // --- Plant Logic ---
+        function getActivePlantCount() {
+             let count = 0;
+             for(let i=0; i<MAX_PLANTS; i++){
+                if(plantStates[i].stage > 0 || plantStates[i].pomosTowardsNextStage > 0){ count++; } 
+                else { return Math.max(1, count + 1); }
+             }
+             return Math.max(1, count); 
+        }
+        function updatePotAndPlantPositions(numPotSlotsToDisplay, animate = true) {
+            const currentConfigKey = Math.max(1, Math.min(numPotSlotsToDisplay, MAX_PLANTS));
+            const config = PLANT_SLOT_CONFIGS[currentConfigKey];
+            const potTargetWidth = POT_WIDTHS[currentConfigKey];
+            const potTargetX = POT_X_POS[currentConfigKey];
+            if (!animate) { potRect.style.transition = 'none'; plantSlots.forEach(slot => slot.style.transition = 'none'); }
+            potRect.setAttribute('width', potTargetWidth); potRect.setAttribute('x', potTargetX);
+            plantSlots.forEach((slot, index) => {
+                if (config.activeSlotIndices.includes(index)) {
+                    const transformConfig = config.transforms[config.activeSlotIndices.indexOf(index)];
+                    slot.setAttribute('transform', `translate(${transformConfig.x}, ${transformConfig.y})`);
+                } else { slot.setAttribute('transform', 'translate(-2000, -2000)'); }
+            });
+            if (!animate) { void potRect.offsetWidth; plantSlots.forEach(slot => void slot.offsetWidth);
+                potRect.style.transition = ''; plantSlots.forEach(slot => slot.style.transition = ''); }
+        }
+        
+        function advancePlantGrowth() {
+            let activePlantIdx = plantStates.findIndex((p, i) => p.stage < STAGES_PER_PLANT - 1 && currentIntentions[i]);
+            
+            if (activePlantIdx === -1) { 
+                activePlantIdx = plantStates.findIndex((p, i) => p.stage === 0 && p.pomosTowardsNextStage === 0 && !currentIntentions[i]);
+                if (activePlantIdx === -1) {
+                     if (plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
+                        plantStates[0] = { stage: 0, pomosTowardsNextStage: 0 };
+                        currentIntentions[0] = ""; activePlantIdx = 0; updatePlantVisual(0);
+                        checkAndPromptForIntention(); return false; 
+                     }
+                     checkAndPromptForIntention(); return false; 
+                }
+                checkAndPromptForIntention(); return false;
+            }
+            
+            const plant = plantStates[activePlantIdx];
+            plant.pomosTowardsNextStage++;
+            let grew = false;
+            if (plant.pomosTowardsNextStage >= POMODOROS_PER_STAGE) {
+                if (plant.stage < STAGES_PER_PLANT - 1) {
+                    plant.stage++; plant.pomosTowardsNextStage = 0; grew = true;
+                } else if (plant.stage === STAGES_PER_PLANT - 1) { 
+                    grew = false; 
+                }
+            }
+            updatePlantVisual(activePlantIdx); 
+            updatePlantStageEmojiDisplay(); 
+            
+            const currentActivePlantCount = getActivePlantCount();
+            // Expand pot ONLY if a new plant slot is becoming active for the first time
+            // (i.e., a seed in a new slot just got its first pomodoro)
+            // OR a plant just fully bloomed AND this makes a new slot available for a seed.
+            let shouldExpandPot = false;
+            if (grew && plant.stage === 0 && plant.pomosTowardsNextStage === 0) { 
+                // This condition is unlikely if POMODOROS_PER_STAGE is 1 and stage increments.
+                // More accurately: if a new slot is now part of getActivePlantCount()
+            }
+            if (grew && plant.stage === STAGES_PER_PLANT - 1) { // A plant just fully bloomed
+                 // Check if this bloom makes a *new* slot effectively active for a seed
+                 const newActiveCount = getActivePlantCount();
+                 if (newActiveCount > currentActivePlantCount || (newActiveCount === 1 && plantStates[0].stage === 0)) { // Pot might need to resize
+                    shouldExpandPot = true;
+                 }
+                 checkAndPromptForIntention(); 
+            }
+            // Pot expansion logic: expand if the number of "active" slots (growing or ready for new seed) increases
+            const previousActiveSlots = plantStates.filter(p => p.stage > 0 || (p.stage === 0 && p.pomosTowardsNextStage > 0 && currentIntentions[plantStates.indexOf(p)])).length || 1;
+            const newActiveSlots = getActivePlantCount();
+            if (newActiveSlots > previousActiveSlots && newActiveSlots <= MAX_PLANTS) {
+                updatePotAndPlantPositions(newActiveSlots, true);
+            } else if (grew) { // If it just grew but didn't activate a new slot, still update positions for existing.
+                 updatePotAndPlantPositions(previousActiveSlots, true);
+            }
+
+
+            return grew;
+        }
+
+        function updatePlantVisual(plantIndex) {
+            const plantState = plantStates[plantIndex]; const slot = plantSlots[plantIndex]; if (!slot) return;
+            const parts = { seed: slot.querySelector('[data-part="seed"]'), stem: slot.querySelector('[data-part="stem"]'), leaf1: slot.querySelector('[data-part="leaf1"]'), leaf2: slot.querySelector('[data-part="leaf2"]'), flower: slot.querySelector('[data-part="flower"]'), };
+            Object.values(parts).forEach(part => part.classList.replace('visible-plant-part', 'hidden-plant-part'));
+            if (plantState.stage >= 0) parts.seed.classList.replace('hidden-plant-part', 'visible-plant-part');
+            if (plantState.stage >= 1) parts.stem.classList.replace('hidden-plant-part', 'visible-plant-part');
+            if (plantState.stage >= 2) parts.leaf1.classList.replace('hidden-plant-part', 'visible-plant-part');
+            if (plantState.stage >= 3) parts.leaf2.classList.replace('hidden-plant-part', 'visible-plant-part');
+            if (plantState.stage >= 4) parts.flower.classList.replace('hidden-plant-part', 'visible-plant-part');
+        }
+        function updateAllPlantsVisual() {  plantStates.forEach((_, index) => updatePlantVisual(index)); updatePlantStageEmojiDisplay(); }
+        function updatePlantStageEmojiDisplay() {
+            let overallDisplay = ""; let activePlantsExist = false; const numActivePotSlots = getActivePlantCount(); 
+            for(let i=0; i < MAX_PLANTS; i++) { const configKey = Math.max(1, Math.min(numActivePotSlots, MAX_PLANTS)); const currentPotConfig = PLANT_SLOT_CONFIGS[configKey];
+                if (currentPotConfig.activeSlotIndices.includes(i) && (plantStates[i].stage > 0 || plantStates[i].pomosTowardsNextStage > 0)) {
+                     overallDisplay += PLANT_EMOJIS_BY_STAGE[plantStates[i].stage] + " "; activePlantsExist = true; }
+            }
+            if (!activePlantsExist && numActivePotSlots >= 1) { plantStageEmojiDisplay.innerHTML = PLANT_EMOJIS_BY_STAGE[0]; } 
+            else { plantStageEmojiDisplay.innerHTML = overallDisplay.trim(); }
+        }
+        function updateSessionCount() { sessionCountDisplay.textContent = totalPomodoros; }
+
+        // --- Theme & UI Toggles ---
+        function toggleTheme() { isDarkMode = !isDarkMode; applyTheme(); updateThemeToggleIconVisual(); saveState(); }
+        function applyTheme() { if (isDarkMode) body.classList.add('dark'); else body.classList.remove('dark'); }
+        function updateThemeToggleIconVisual() { themeToggleButton.textContent = isDarkMode ? '☀️' : '🌓'; }
+        
+        function cycleAlertSound() { currentAlertSoundIndex = (currentAlertSoundIndex + 1) % ALERT_SOUNDS.length; updateAlertSoundToggleVisual(); saveState(); }
+        function updateAlertSoundToggleVisual() { alertSoundToggleButton.textContent = ALERT_SOUNDS[currentAlertSoundIndex].emoji; alertSoundToggleButton.title = `Alert Sound: ${ALERT_SOUNDS[currentAlertSoundIndex].name}`; }
+        
+        function toggleOverlayAlerts() { showOverlayAlerts = !showOverlayAlerts; updateOverlayAlertsToggleVisual(); saveState(); }
+        function updateOverlayAlertsToggleVisual() { overlayAlertsToggle.textContent = showOverlayAlerts ? '💬' : '🗯️'; overlayAlertsToggle.title = showOverlayAlerts ? 'Hide Pop-up Alerts' : 'Show Pop-up Alerts'; }
+
+        function toggleAdvancedSettingsPanel() { advancedSettingsPanelInner.classList.toggle('open'); } 
+        
+        function updateMessageArea(text) { 
+            if (intentionInputArea.classList.contains('hidden')) {
+                messageArea.textContent = text; 
+                messageArea.classList.remove('message-highlight-active'); 
+                void messageArea.offsetWidth; 
+                messageArea.classList.add('message-highlight-active'); 
+            }
+        }
+
+        // --- Background Sound Logic ---
+        function cycleBackgroundSound() {
+            currentBackgroundSoundIndex = (currentBackgroundSoundIndex + 1) % BACKGROUND_SOUNDS.length;
+            playCurrentBackgroundSound();
+            updateBackgroundSoundToggleVisual();
+            saveState();
+        }
+
+        function updateBackgroundSoundToggleVisual() {
+            const sound = BACKGROUND_SOUNDS[currentBackgroundSoundIndex];
+            backgroundSoundToggleDropdown.textContent = sound.emoji; 
+            backgroundSoundToggleDropdown.title = `BG Sound: ${sound.name} ${sound.remark}`;
+            
+            if (sound.key !== 'off') {
+                backgroundSoundControlsDropdown.classList.remove('hidden');
+                backgroundSoundControlsDropdown.classList.add('flex'); 
+                currentBackgroundSoundNameDropdown.textContent = `${sound.name} ${sound.remark}`;
+            } else {
+                backgroundSoundControlsDropdown.classList.add('hidden');
+                backgroundSoundControlsDropdown.classList.remove('flex');
+                currentBackgroundSoundNameDropdown.textContent = '';
+            }
+        }
+        
+        function playCurrentBackgroundSound() {
+            stopBackgroundSound(); 
+            const sound = BACKGROUND_SOUNDS[currentBackgroundSoundIndex];
+            if (sound.key === 'off') return;
+
+            audioCtx = getAudioContext();
+            if (!audioCtx) return;
+
+            backgroundGainNode = audioCtx.createGain();
+            let volumeValue = parseFloat(backgroundVolumeSliderDropdown.value);
+            if (isNaN(volumeValue)) volumeValue = 0.1; 
+            backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
+            backgroundGainNode.connect(audioCtx.destination);
+
+            if (sound.type === 'whitenoise') { 
+                // This case is removed from BACKGROUND_SOUNDS
+            } else { 
+                backgroundOscillator1 = audioCtx.createOscillator();
+                backgroundOscillator2 = audioCtx.createOscillator();
+                backgroundOscillator1.type = 'sine';
+                backgroundOscillator2.type = 'sine';
+                backgroundOscillator1.frequency.setValueAtTime(sound.baseFreq - sound.beatFreq / 2, audioCtx.currentTime);
+                backgroundOscillator2.frequency.setValueAtTime(sound.baseFreq + sound.beatFreq / 2, audioCtx.currentTime);
+                backgroundOscillator1.connect(backgroundGainNode);
+                backgroundOscillator2.connect(backgroundGainNode);
+                backgroundOscillator1.start();
+                backgroundOscillator2.start();
+            }
+        }
+
+        function stopBackgroundSound() {
+            if (backgroundOscillator1) { backgroundOscillator1.stop(); backgroundOscillator1.disconnect(); backgroundOscillator1 = null; }
+            if (backgroundOscillator2) { backgroundOscillator2.stop(); backgroundOscillator2.disconnect(); backgroundOscillator2 = null; }
+            if (backgroundGainNode) { backgroundGainNode.disconnect(); backgroundGainNode = null; }
+        }
+
+
+        // --- Audio (Alerts) ---
+        function getAudioContext(){if(!audioCtx&&(window.AudioContext||window.webkitAudioContext))audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
+        function playAlertSound(){const t=getAudioContext();if(!t)return;const e=ALERT_SOUNDS[currentAlertSoundIndex].key;switch(e){case"beep":playBeep(isWorkSession?880:440,.15,.05);break;case"chime":playChime(.1,.08);break;case"alert":playComplexAlert(.2,.07);break;}} 
+        function playBeep(f,d,v){const c=getAudioContext();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(f,c.currentTime);g.gain.setValueAtTime(v,c.currentTime);g.gain.exponentialRampToValueAtTime(1e-5,c.currentTime+d);o.start(c.currentTime);o.stop(c.currentTime+d)}
+        function playChime(d,v){const c=getAudioContext();if(!c)return;[1046.5,1396.91].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.setValueAtTime(f,c.currentTime);g.gain.setValueAtTime(v*(i===0?1:.7),c.currentTime);g.gain.exponentialRampToValueAtTime(1e-5,c.currentTime+d+i*.1);o.start(c.currentTime);o.stop(c.currentTime+d+i*.1+.2)})}
+        function playComplexAlert(d,v){const c=getAudioContext();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sawtooth';o.frequency.setValueAtTime(1e3,c.currentTime);o.frequency.exponentialRampToValueAtTime(1500,c.currentTime+d*.5);o.frequency.exponentialRampToValueAtTime(800,c.currentTime+d);g.gain.setValueAtTime(v,c.currentTime);g.gain.linearRampToValueAtTime(1e-5,c.currentTime+d+.05);o.start(c.currentTime);o.stop(c.currentTime+d+.1)}
+
+        // --- Notifications ---
+        function showNotification(message) { 
+            if (showOverlayAlerts) { 
+                modalMessage.textContent = message; 
+                notificationModal.style.display = 'block'; 
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
