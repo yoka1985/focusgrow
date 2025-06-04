@@ -104,7 +104,7 @@
             top: calc(100% + 0.25rem); 
             right: 0; 
             z-index: 50; 
-            width: 280px; 
+            width: 225px; 
             padding: 0.75rem; 
             border-radius: 0.5rem; 
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
@@ -145,7 +145,15 @@
             white-space: nowrap;
         }
         
-        input[type="range"].volume-slider {
+        input[type="range"].volume-slider.vertical-slider {
+            -webkit-appearance: slider-vertical;
+            writing-mode: bt-lr; 
+            width: 8px; 
+            height: 60px; 
+            padding: 0;
+            margin-right: 0.5rem; 
+        }
+        input[type="range"].volume-slider { 
             -webkit-appearance: none;
             appearance: none;
             width: 70px; 
@@ -177,10 +185,11 @@
         body.dark input[type="range"].volume-slider::-webkit-slider-thumb { background: var(--primary-accent-dark); }
         body.dark input[type="range"].volume-slider::-moz-range-thumb { background: var(--primary-accent-dark); }
         body.dark input[type="range"].volume-slider { background: #4b5563; } 
+
         #intention-display {
             font-size: 0.875rem; 
-            margin-top: 0.25rem; 
-            margin-bottom: 0.5rem; 
+            margin-top: 1.25rem; 
+            margin-bottom: 0.75rem; 
             padding: 0.25rem 0.5rem;
             border-radius: 0.375rem; 
             min-height: 1.75rem; 
@@ -242,16 +251,6 @@
                                 <span class="font-medium">Alert Sound:</span>
                                 <button id="alert-sound-toggle-button" title="Toggle Alert Sound" aria-label="Toggle Alert Sound" class="icon-button text-xl ml-auto">🔔</button>
                             </div>
-                             <div class="flex flex-col items-start">
-                                <div class="flex justify-between items-center w-full">
-                                    <span class="font-medium">Background Sound:</span>
-                                    <button id="background-sound-toggle-dropdown" title="Toggle Background Sound" aria-label="Toggle Background Sound" class="icon-button text-xl ml-auto">🎧</button>
-                                </div>
-                                <div id="background-sound-controls-dropdown" class="hidden items-center mt-1 pl-2 w-full">
-                                    <span id="current-background-sound-name-dropdown" class="text-xs mr-2 truncate"></span>
-                                    <input type="range" id="background-volume-slider-dropdown" min="0" max="1" step="0.01" value="0.1" class="volume-slider flex-grow">
-                                </div>
-                            </div>
                             <div class="flex justify-between items-center">
                                 <span class="font-medium">Pop-up Alerts:</span>
                                 <button id="overlay-alerts-toggle" title="Toggle Pop-up Alerts" aria-label="Toggle Pop-up Alerts" class="icon-button text-xl ml-auto">💬</button>
@@ -282,14 +281,14 @@
                     </div>
                 </div>
             </div>
-            <div id="message-area-container" class="text-lg font-semibold h-10 mb-1 rounded-md px-2 text-center flex flex-col justify-center items-center relative">
+            <div id="message-area-container" class="text-lg font-semibold h-10 mb-4 rounded-md px-2 text-center flex flex-col justify-center items-center relative"> 
                 <div id="message-area" class="message-highlight-base">Ready?</div>
                 <div id="intention-input-area" class="hidden w-full max-w-xs mt-1">
                     <input type="text" id="intention-input" placeholder="My focus for this bloom..." maxlength="70" class="w-full border p-1.5 text-sm rounded-md shadow-sm">
                     <button id="set-intention-button" class="mt-1 bg-indigo-500 hover:bg-indigo-600 text-white text-xs py-1 px-3 rounded-md shadow">Set</button>
                 </div>
             </div>
-             <div id="intention-display" class="text-center"></div>
+             <div id="intention-display" class="text-center hidden"></div>
         </header>
         
         <div id="plant-display-area" class="mb-1 h-48 w-full mx-auto">
@@ -327,56 +326,45 @@
         <div id="plant-stage-emoji-display" class="text-3xl mb-4 h-10 flex items-center justify-center"></div>
         <div id="timer-display" class="timer-text font-bold mb-5 text-center">25:00</div>
         
-        <div class="flex justify-center items-center space-x-3 mb-5">
-            <button id="start-pause-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Start</button>
-            <button id="reset-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Reset</button>
+        <div class="flex justify-between items-center mb-5 px-2">
+            <div class="flex items-center space-x-1 ml-2"> 
+                 <div id="background-sound-controls-main" class="hidden items-center"> 
+                    <input type="range" id="background-volume-slider-main" min="0" max="1" step="0.01" value="0.1" class="volume-slider vertical-slider">
+                 </div>
+                 <button id="background-sound-toggle-main" title="Toggle Background Sound" aria-label="Toggle Background Sound" class="icon-button text-2xl">🎧</button>
+            </div>
+            <div class="flex justify-center items-center space-x-3 flex-grow">
+                <button id="start-pause-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Start</button>
+                <button id="reset-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Reset</button>
+            </div>
+            <div class="w-10"></div> 
         </div>
+         <!-- current-background-sound-name-main removed from HTML -->
+
+
     </div>
 
     <div id="notification-modal" class="modal">
         <div class="modal-content">
             <p id="modal-message" class="text-lg mb-4"></p>
-            <button id="modal-ok-button" class="font-semibold py-2 px-4 rounded-lg transition-all duration-150 ease-in-out active:scale-95 active:brightness-90">OK</button>
+            <div class="flex justify-center space-x-3">
+                <button id="modal-ok-button" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">OK</button>
+                <button id="modal-disable-alerts-button" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">Disable Alerts</button>
+            </div>
         </div>
     </div>
 
     <script>
         // DOM Elements
-        const timerDisplay = document.getElementById('timer-display');
-        const startPauseButton = document.getElementById('start-pause-button');
-        const resetButton = document.getElementById('reset-button');
-        const workDurationSelect = document.getElementById('work-duration');
-        const breakDurationSelect = document.getElementById('break-duration');
-        const sessionCountDisplay = document.getElementById('session-count');
-        const messageAreaContainer = document.getElementById('message-area-container');
-        const messageArea = document.getElementById('message-area');
-        const intentionInputArea = document.getElementById('intention-input-area');
-        const intentionInput = document.getElementById('intention-input');
-        const setIntentionButton = document.getElementById('set-intention-button');
-        const intentionDisplay = document.getElementById('intention-display');
-        const animatedHighlight = document.getElementById('animated-highlight');
-        const plantSlots = [ document.getElementById('plant-slot-0'), document.getElementById('plant-slot-1'), document.getElementById('plant-slot-2') ];
-        const potRect = document.getElementById('pot-rect');
-        const plantStageEmojiDisplay = document.getElementById('plant-stage-emoji-display');
-        
-        const mainSettingsToggle = document.getElementById('main-settings-toggle');
-        const mainSettingsDropdown = document.getElementById('main-settings-dropdown');
-        const themeToggleButton = document.getElementById('theme-toggle-button');
-        const alertSoundToggleButton = document.getElementById('alert-sound-toggle-button');
-        const backgroundSoundToggleDropdown = document.getElementById('background-sound-toggle-dropdown'); 
-        const backgroundSoundControlsDropdown = document.getElementById('background-sound-controls-dropdown');
-        const currentBackgroundSoundNameDropdown = document.getElementById('current-background-sound-name-dropdown');
-        const backgroundVolumeSliderDropdown = document.getElementById('background-volume-slider-dropdown');
-        const overlayAlertsToggle = document.getElementById('overlay-alerts-toggle');
-        const advancedSettingsToggleInner = document.getElementById('advanced-settings-toggle-inner'); 
-        const advancedSettingsPanelInner = document.getElementById('advanced-settings-panel-inner'); 
-        const longBreakIntervalSelect = document.getElementById('long-break-interval'); 
-        const longBreakDurationSelect = document.getElementById('long-break-duration'); 
-        
-        const body = document.body;
-        const notificationModal = document.getElementById('notification-modal');
-        const modalMessage = document.getElementById('modal-message');
-        const modalOkButton = document.getElementById('modal-ok-button');
+        let timerDisplay, startPauseButton, resetButton, workDurationSelect, breakDurationSelect, 
+            sessionCountDisplay, messageAreaContainer, messageArea, intentionInputArea, intentionInput, 
+            setIntentionButton, intentionDisplay, animatedHighlight, potRect, plantStageEmojiDisplay,
+            mainSettingsToggle, mainSettingsDropdown, themeToggleButton, alertSoundToggleButton,
+            backgroundSoundToggleMain, backgroundSoundControlsMain, backgroundVolumeSliderMain,
+            overlayAlertsToggle, advancedSettingsToggleInner, advancedSettingsPanelInner, 
+            longBreakIntervalSelect, longBreakDurationSelect, body, notificationModal, modalMessage, 
+            modalOkButton, modalDisableAlertsButton;
+        let plantSlots = []; 
 
         // App State
         let workDuration = 25 * 60; 
@@ -410,40 +398,82 @@
         ];
         let currentAlertSoundIndex = 0;
 
-        const BACKGROUND_SOUNDS = [
-            { key: 'off', name: 'Off', emoji: '🎧', remark: ''},
-            { key: 'alpha', name: 'Alpha Waves', emoji: '🧠', remark: '(mild focus)', baseFreq: 200, beatFreq: 10 }, 
-            { key: 'beta', name: 'Beta Waves', emoji: '💡', remark: '(intense focus)', baseFreq: 200, beatFreq: 20 },  
+        const BACKGROUND_SOUNDS = [ 
+            { key: 'off', name: 'Off', emoji: '🎧', remark: '', src: null },
+            { key: 'alpha', name: 'Alpha Waves', emoji: '🧠', remark: '(mild focus)', src: 'alpha_4_5_clip.mp3', fallbackType: 'binaural', baseFreq: 200, beatFreq: 10 }, 
+            { key: 'ocean', name: 'Ocean Waves', emoji: '🌊', remark: '(calming)', src: 'ocean_clip.mp3' },  
+            { key: 'guitar', name: 'Soft Guitar', emoji: '🎸', remark: '(relaxing)', src: 'soft_guitar_23_trim.mp3' },  
         ];
         let currentBackgroundSoundIndex = 0;
+        let backgroundAudioElement; 
+        let backgroundAudioSourceNode; 
         let backgroundGainNode;
-        let backgroundOscillator1;
-        let backgroundOscillator2; 
+        let backgroundFallbackOsc1; // For generated fallback
+        let backgroundFallbackOsc2; // For generated fallback
         
-        let isDarkMode = true; // Default to dark mode
+        let isDarkMode = true; 
         let longBreakInterval = 4; 
         let longBreakDuration = 15 * 60; 
         let showOverlayAlerts = true; 
         const INTENTION_CHAR_LIMIT = 70;
+        const HIGHLIGHT_PADDING = 6; 
 
         // --- Initialization ---
         function init() {
+            timerDisplay = document.getElementById('timer-display');
+            startPauseButton = document.getElementById('start-pause-button');
+            resetButton = document.getElementById('reset-button');
+            workDurationSelect = document.getElementById('work-duration');
+            breakDurationSelect = document.getElementById('break-duration');
+            sessionCountDisplay = document.getElementById('session-count');
+            messageAreaContainer = document.getElementById('message-area-container');
+            messageArea = document.getElementById('message-area');
+            intentionInputArea = document.getElementById('intention-input-area');
+            intentionInput = document.getElementById('intention-input');
+            setIntentionButton = document.getElementById('set-intention-button');
+            intentionDisplay = document.getElementById('intention-display');
+            animatedHighlight = document.getElementById('animated-highlight');
+            plantSlots = [ document.getElementById('plant-slot-0'), document.getElementById('plant-slot-1'), document.getElementById('plant-slot-2') ];
+            potRect = document.getElementById('pot-rect');
+            plantStageEmojiDisplay = document.getElementById('plant-stage-emoji-display');
+            
+            mainSettingsToggle = document.getElementById('main-settings-toggle');
+            mainSettingsDropdown = document.getElementById('main-settings-dropdown');
+            themeToggleButton = document.getElementById('theme-toggle-button');
+            alertSoundToggleButton = document.getElementById('alert-sound-toggle-button');
+            
+            backgroundSoundToggleMain = document.getElementById('background-sound-toggle-main');
+            backgroundSoundControlsMain = document.getElementById('background-sound-controls-main');
+            backgroundVolumeSliderMain = document.getElementById('background-volume-slider-main');
+
+            overlayAlertsToggle = document.getElementById('overlay-alerts-toggle');
+            advancedSettingsToggleInner = document.getElementById('advanced-settings-toggle-inner'); 
+            advancedSettingsPanelInner = document.getElementById('advanced-settings-panel-inner'); 
+            longBreakIntervalSelect = document.getElementById('long-break-interval'); 
+            longBreakDurationSelect = document.getElementById('long-break-duration'); 
+            
+            body = document.body;
+            notificationModal = document.getElementById('notification-modal');
+            modalMessage = document.getElementById('modal-message');
+            modalOkButton = document.getElementById('modal-ok-button');
+            modalDisableAlertsButton = document.getElementById('modal-disable-alerts-button');
+            
             loadState(); 
             
             updateTimerDisplay();
             updateAllPlantsVisual(); 
             updateSessionCount();
-            applyTheme(); // Apply theme based on loaded or default isDarkMode
+            applyTheme(); 
             updateThemeToggleIconVisual(); 
             updateAlertSoundToggleVisual();
             updateBackgroundSoundToggleVisual(); 
             updateOverlayAlertsToggleVisual(); 
-            updatePotAndPlantPositions(getActivePlantCount(), false); 
+            updatePotAndPlantPositions(getPreparedSlotCount(), false); 
             checkAndPromptForIntention();
 
 
-            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, backgroundSoundToggleDropdown, overlayAlertsToggle, advancedSettingsToggleInner, setIntentionButton].forEach(button => {
-                if(button) { 
+            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, overlayAlertsToggle, advancedSettingsToggleInner, setIntentionButton, modalDisableAlertsButton, backgroundSoundToggleMain].forEach(button => {
+                if(button !== null && typeof button !== 'undefined') { 
                     button.addEventListener('mousedown', () => button.classList.add('active-pressed'));
                     button.addEventListener('mouseup', () => button.classList.remove('active-pressed'));
                     button.addEventListener('mouseleave', () => button.classList.remove('active-pressed'));
@@ -461,16 +491,12 @@
             });
             themeToggleButton.addEventListener('click', toggleTheme);
             alertSoundToggleButton.addEventListener('click', cycleAlertSound);
-            backgroundSoundToggleDropdown.addEventListener('click', cycleBackgroundSound); 
-            backgroundVolumeSliderDropdown.addEventListener('input', (e) => { 
-                if (backgroundGainNode) {
-                    if (!audioCtx) audioCtx = getAudioContext(); 
-                    if (audioCtx) { 
-                         backgroundGainNode.gain.setValueAtTime(parseFloat(e.target.value), audioCtx.currentTime);
-                    }
-                }
-                saveState(); 
-            });
+            
+            backgroundSoundToggleMain.addEventListener('click', cycleBackgroundSound);
+            if(backgroundVolumeSliderMain) { 
+                backgroundVolumeSliderMain.addEventListener('input', handleVolumeChange);
+            }
+            
             overlayAlertsToggle.addEventListener('click', toggleOverlayAlerts);
             advancedSettingsToggleInner.addEventListener('click', (event) => {
                  event.stopPropagation(); 
@@ -489,27 +515,29 @@
             modalOkButton.addEventListener('click', () => {
                 notificationModal.style.display = 'none';
                 if (!isRunning && currentTime <= 0) { 
-                    // If timer was at 0 and modal dismissed, next session should be ready to start
-                    // The sessionEnd function should have already set the button to 'Start' if needed
-                    // and prepared the next session's time.
-                    // We only call startTimer if it's not disabled (e.g. intention needed)
-                    if (!startPauseButton.disabled) {
-                        // Check if it's appropriate to auto-start or just ensure UI is correct
-                        if (startPauseButton.textContent === 'Start') {
-                             // UI is ready for manual start.
-                        } else if (startPauseButton.textContent === 'Resume' && !isRunning) {
-                            // This case should ideally not happen if sessionEnd logic is correct
-                            // but as a fallback, allow resume.
-                             startTimer();
-                        }
+                    if (!startPauseButton.disabled && showOverlayAlerts) { 
+                         startTimer(); 
+                    } else if (!startPauseButton.disabled) {
+                        startPauseButton.textContent = 'Start'; 
                     }
                 }
             });
+            modalDisableAlertsButton.addEventListener('click', () => {
+                showOverlayAlerts = false;
+                updateOverlayAlertsToggleVisual();
+                saveState();
+                notificationModal.style.display = 'none';
+                if (!isRunning && currentTime <= 0) {
+                    startPauseButton.textContent = 'Start';
+                    updateTimerDisplay(); 
+                }
+            });
+
 
             document.addEventListener('click', function(event) {
-                if (!mainSettingsDropdown.contains(event.target) && !mainSettingsToggle.contains(event.target) && mainSettingsDropdown.classList.contains('open')) {
+                if (mainSettingsDropdown && !mainSettingsDropdown.contains(event.target) && mainSettingsToggle && !mainSettingsToggle.contains(event.target) && mainSettingsDropdown.classList.contains('open')) {
                     mainSettingsDropdown.classList.remove('open');
-                    advancedSettingsPanelInner.classList.remove('open'); 
+                    if (advancedSettingsPanelInner) advancedSettingsPanelInner.classList.remove('open'); 
                 }
             });
 
@@ -517,7 +545,14 @@
             breakDurationSelect.value = breakDuration / 60;
             longBreakIntervalSelect.value = longBreakInterval; 
             longBreakDurationSelect.value = longBreakDuration / 60; 
-            backgroundVolumeSliderDropdown.value = backgroundGainNode ? backgroundGainNode.gain.value : 0.1; 
+            
+            const initialVolume = parseFloat(localStorage.getItem('backgroundVolume')) || 0.1; 
+            if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = initialVolume;
+            
+            if (BACKGROUND_SOUNDS[currentBackgroundSoundIndex].key !== 'off') {
+                 audioCtx = getAudioContext(); 
+                 if(audioCtx) playCurrentBackgroundSound(); 
+            }
         }
 
         // --- LocalStorage ---
@@ -529,14 +564,14 @@
                 longBreakInterval: longBreakIntervalSelect.value, 
                 longBreakDuration: longBreakDurationSelect.value, 
                 currentBackgroundSoundIndex,
-                backgroundVolume: parseFloat(backgroundVolumeSliderDropdown.value),
+                backgroundVolume: parseFloat(backgroundVolumeSliderMain && backgroundVolumeSliderMain.value ? backgroundVolumeSliderMain.value : 0.1), 
                 showOverlayAlerts 
             };
-            localStorage.setItem('pomodoroGrowthAppV14', JSON.stringify(state)); 
+            localStorage.setItem('pomodoroGrowthAppV16', JSON.stringify(state)); 
         }
 
         function loadState() {
-            const savedState = localStorage.getItem('pomodoroGrowthAppV14'); 
+            const savedState = localStorage.getItem('pomodoroGrowthAppV16'); 
             if (savedState) {
                 const state = JSON.parse(savedState);
                 workDurationSelect.value = state.workDuration || 25;
@@ -555,19 +590,22 @@
                 }
 
                 currentAlertSoundIndex = state.currentAlertSoundIndex || 0;
-                isDarkMode = typeof state.isDarkMode === 'boolean' ? state.isDarkMode : true; // Default to true if not set
+                isDarkMode = typeof state.isDarkMode === 'boolean' ? state.isDarkMode : true; 
                 longBreakIntervalSelect.value = state.longBreakInterval || 4;
                 longBreakDurationSelect.value = state.longBreakDuration || 15;
                 currentBackgroundSoundIndex = state.currentBackgroundSoundIndex || 0;
-                backgroundVolumeSliderDropdown.value = state.backgroundVolume || 0.1;
+                
+                const savedVolume = state.backgroundVolume || 0.1;
+                if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = savedVolume;
+
                 showOverlayAlerts = typeof state.showOverlayAlerts === 'boolean' ? state.showOverlayAlerts : true;
 
 
             } else { 
-                isDarkMode = true; // Default to dark mode for new users
+                isDarkMode = true; 
                 plantStates = Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
                 currentIntentions = Array(MAX_PLANTS).fill("");
-                backgroundVolumeSliderDropdown.value = 0.1; 
+                if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = 0.1;
                 showOverlayAlerts = true;
             }
             updateDurations(); 
@@ -601,10 +639,10 @@
             const appContainerRect = appContainer.getBoundingClientRect();
             const targetRect = targetElement.getBoundingClientRect();
 
-            animatedHighlight.style.left = `${targetRect.left - appContainerRect.left + appContainer.scrollLeft}px`;
-            animatedHighlight.style.top = `${targetRect.top - appContainerRect.top + appContainer.scrollTop}px`;
-            animatedHighlight.style.width = `${targetRect.width}px`;
-            animatedHighlight.style.height = `${targetRect.height}px`;
+            animatedHighlight.style.left = `${targetRect.left - appContainerRect.left + appContainer.scrollLeft - HIGHLIGHT_PADDING}px`;
+            animatedHighlight.style.top = `${targetRect.top - appContainerRect.top + appContainer.scrollTop - HIGHLIGHT_PADDING}px`;
+            animatedHighlight.style.width = `${targetRect.width + (HIGHLIGHT_PADDING * 2)}px`;
+            animatedHighlight.style.height = `${targetRect.height + (HIGHLIGHT_PADDING * 2)}px`;
             animatedHighlight.style.opacity = '1';
         }
 
@@ -613,6 +651,9 @@
             const activePlantIdx = getActivePlantIndexForIntention();
             const plant = plantStates[activePlantIdx];
             
+            intentionInputArea.classList.add('hidden'); 
+            intentionDisplay.classList.add('hidden');   
+
             if (plant && plant.stage === 0 && !currentIntentions[activePlantIdx]) {
                 messageArea.innerHTML = `<button id="intention-prompt-button" class="font-semibold hover:underline">+ Add Intention for this Bloom</button>`;
                 const promptButton = document.getElementById('intention-prompt-button');
@@ -620,21 +661,17 @@
                     promptButton.addEventListener('click', showIntentionInput);
                     setTimeout(() => positionHighlight(promptButton), 50); 
                 }
-                intentionInputArea.classList.add('hidden');
-                intentionDisplay.textContent = '';
                 startPauseButton.disabled = true;
-                startPauseButton.textContent = 'Start'; // Ensure it says Start when disabled for intention
+                startPauseButton.textContent = 'Start'; 
             } else if (plant && currentIntentions[activePlantIdx]) {
                 messageArea.textContent = isRunning ? messageArea.textContent : "Ready?"; 
-                intentionInputArea.classList.add('hidden');
                 intentionDisplay.textContent = `Focus: ${currentIntentions[activePlantIdx]}`;
+                intentionDisplay.classList.remove('hidden'); 
                 startPauseButton.disabled = false;
-                if (!isRunning) startPauseButton.textContent = 'Start'; // If not running, should say Start
+                if (!isRunning) startPauseButton.textContent = 'Start'; 
                 setTimeout(() => positionHighlight(intentionDisplay), 50); 
             } else {
                  messageArea.textContent = "Ready?";
-                 intentionInputArea.classList.add('hidden');
-                 intentionDisplay.textContent = '';
                  startPauseButton.disabled = false; 
                  if (!isRunning) startPauseButton.textContent = 'Start';
                  animatedHighlight.style.opacity = '0';
@@ -643,7 +680,7 @@
 
         function showIntentionInput() {
             messageArea.textContent = "Set your focus:";
-            intentionInputArea.classList.remove('hidden');
+            intentionInputArea.classList.remove('hidden'); 
             intentionInput.value = '';
             intentionInput.focus();
             setTimeout(() => positionHighlight(intentionInputArea), 50);
@@ -655,6 +692,7 @@
             if (intentionText && intentionText.length <= INTENTION_CHAR_LIMIT) {
                 currentIntentions[activePlantIdx] = intentionText;
                 intentionDisplay.textContent = `Focus: ${intentionText}`;
+                intentionDisplay.classList.remove('hidden'); 
                 intentionInputArea.classList.add('hidden');
                 messageArea.textContent = "Ready?"; 
                 startPauseButton.disabled = false;
@@ -741,7 +779,7 @@
 
                 updateTimerDisplay(); updateAllPlantsVisual(); updateSessionCount();
                 updatePlantStageEmojiDisplay();
-                updatePotAndPlantPositions(getActivePlantCount(), true); 
+                updatePotAndPlantPositions(getPreparedSlotCount(), true); 
                 checkAndPromptForIntention(); 
                 saveState();
             } else {
@@ -770,7 +808,7 @@
 
         function sessionEnd() {
             clearInterval(intervalId); intervalId = null; isRunning = false; 
-            startPauseButton.textContent = 'Start'; // Explicitly set to Start after session ends
+            startPauseButton.textContent = 'Start'; 
             playAlertSound();
 
             const currentWorkVal = workDurationSelect.value;
@@ -814,34 +852,50 @@
             saveState(); 
             updateTimerDisplay(); 
             
-            // Auto-start logic refinement
-            if ((notificationModal.style.display === 'none' || !notificationModal.style.display) || !showOverlayAlerts) {
-                 if (!startPauseButton.disabled) {
-                    // If auto-starting, the button should immediately reflect 'Pause'
-                    startTimer(); // This will set it to 'Pause'
-                 }
-            } else {
-                // If modal is shown, button should remain 'Start' until modal is dismissed and timer potentially auto-starts
-                startPauseButton.textContent = 'Start';
+            if (!showOverlayAlerts) { 
+                 startPauseButton.textContent = 'Start'; 
+            } else if (notificationModal.style.display === 'none' || !notificationModal.style.display) { 
+                 if (!startPauseButton.disabled) startTimer(); 
             }
         }
 
         function updateTimerDisplay() {
             const minutes = Math.floor(currentTime / 60);
             const seconds = currentTime % 60;
-            timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            document.title = `${timerDisplay.textContent} - ${isWorkSession ? "Focus" : "Break"}`;
+            const timeString = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            timerDisplay.textContent = timeString;
+
+            let title = `${timeString} - `;
+            if (isWorkSession) {
+                const activePlantIdx = getActivePlantIndexForIntention();
+                if (currentIntentions[activePlantIdx]) {
+                    title += `${currentIntentions[activePlantIdx].substring(0,20)}... - Focus`;
+                } else {
+                    title += "Focus";
+                }
+            } else {
+                title += "Break";
+            }
+            document.title = title;
         }
 
         // --- Plant Logic ---
-        function getActivePlantCount() {
-             let count = 0;
-             for(let i=0; i<MAX_PLANTS; i++){
-                if(plantStates[i].stage > 0 || plantStates[i].pomosTowardsNextStage > 0){ count++; } 
-                else { return Math.max(1, count + 1); }
-             }
-             return Math.max(1, count); 
+        function getPreparedSlotCount() {
+            let preparedSlots = 0;
+            for (let i = 0; i < MAX_PLANTS; i++) {
+                if (i === 0) { 
+                    preparedSlots = 1;
+                } else {
+                    if (plantStates[i-1] && plantStates[i-1].stage === STAGES_PER_PLANT - 1) {
+                        preparedSlots = Math.max(preparedSlots, i + 1);
+                    } else {
+                        break; 
+                    }
+                }
+            }
+            return Math.max(1, preparedSlots); 
         }
+
         function updatePotAndPlantPositions(numPotSlotsToDisplay, animate = true) {
             const currentConfigKey = Math.max(1, Math.min(numPotSlotsToDisplay, MAX_PLANTS));
             const config = PLANT_SLOT_CONFIGS[currentConfigKey];
@@ -888,33 +942,12 @@
             updatePlantVisual(activePlantIdx); 
             updatePlantStageEmojiDisplay(); 
             
-            const currentActivePlantCount = getActivePlantCount();
-            // Expand pot ONLY if a new plant slot is becoming active for the first time
-            // (i.e., a seed in a new slot just got its first pomodoro)
-            // OR a plant just fully bloomed AND this makes a new slot available for a seed.
-            let shouldExpandPot = false;
-            if (grew && plant.stage === 0 && plant.pomosTowardsNextStage === 0) { 
-                // This condition is unlikely if POMODOROS_PER_STAGE is 1 and stage increments.
-                // More accurately: if a new slot is now part of getActivePlantCount()
-            }
-            if (grew && plant.stage === STAGES_PER_PLANT - 1) { // A plant just fully bloomed
-                 // Check if this bloom makes a *new* slot effectively active for a seed
-                 const newActiveCount = getActivePlantCount();
-                 if (newActiveCount > currentActivePlantCount || (newActiveCount === 1 && plantStates[0].stage === 0)) { // Pot might need to resize
-                    shouldExpandPot = true;
-                 }
+            if (grew && plant.stage === STAGES_PER_PLANT - 1) { 
+                 updatePotAndPlantPositions(getPreparedSlotCount(), true); 
                  checkAndPromptForIntention(); 
+            } else if (grew) { 
+                 updatePotAndPlantPositions(getPreparedSlotCount(), true);
             }
-            // Pot expansion logic: expand if the number of "active" slots (growing or ready for new seed) increases
-            const previousActiveSlots = plantStates.filter(p => p.stage > 0 || (p.stage === 0 && p.pomosTowardsNextStage > 0 && currentIntentions[plantStates.indexOf(p)])).length || 1;
-            const newActiveSlots = getActivePlantCount();
-            if (newActiveSlots > previousActiveSlots && newActiveSlots <= MAX_PLANTS) {
-                updatePotAndPlantPositions(newActiveSlots, true);
-            } else if (grew) { // If it just grew but didn't activate a new slot, still update positions for existing.
-                 updatePotAndPlantPositions(previousActiveSlots, true);
-            }
-
-
             return grew;
         }
 
@@ -930,7 +963,7 @@
         }
         function updateAllPlantsVisual() {  plantStates.forEach((_, index) => updatePlantVisual(index)); updatePlantStageEmojiDisplay(); }
         function updatePlantStageEmojiDisplay() {
-            let overallDisplay = ""; let activePlantsExist = false; const numActivePotSlots = getActivePlantCount(); 
+            let overallDisplay = ""; let activePlantsExist = false; const numActivePotSlots = getPreparedSlotCount(); 
             for(let i=0; i < MAX_PLANTS; i++) { const configKey = Math.max(1, Math.min(numActivePotSlots, MAX_PLANTS)); const currentPotConfig = PLANT_SLOT_CONFIGS[configKey];
                 if (currentPotConfig.activeSlotIndices.includes(i) && (plantStates[i].stage > 0 || plantStates[i].pomosTowardsNextStage > 0)) {
                      overallDisplay += PLANT_EMOJIS_BY_STAGE[plantStates[i].stage] + " "; activePlantsExist = true; }
@@ -972,17 +1005,24 @@
 
         function updateBackgroundSoundToggleVisual() {
             const sound = BACKGROUND_SOUNDS[currentBackgroundSoundIndex];
-            backgroundSoundToggleDropdown.textContent = sound.emoji; 
-            backgroundSoundToggleDropdown.title = `BG Sound: ${sound.name} ${sound.remark}`;
+            if(backgroundSoundToggleMain) { 
+                 backgroundSoundToggleMain.textContent = sound.emoji;
+                 backgroundSoundToggleMain.title = `BG Sound: ${sound.name} ${sound.remark}`;
+            }
             
-            if (sound.key !== 'off') {
-                backgroundSoundControlsDropdown.classList.remove('hidden');
-                backgroundSoundControlsDropdown.classList.add('flex'); 
-                currentBackgroundSoundNameDropdown.textContent = `${sound.name} ${sound.remark}`;
-            } else {
-                backgroundSoundControlsDropdown.classList.add('hidden');
-                backgroundSoundControlsDropdown.classList.remove('flex');
-                currentBackgroundSoundNameDropdown.textContent = '';
+            const controlsContainer = backgroundSoundControlsMain;
+            // const nameDisplay = currentBackgroundSoundNameMain; // Element removed
+            
+            if (controlsContainer) { 
+                if (sound.key !== 'off') {
+                    controlsContainer.classList.remove('hidden');
+                    controlsContainer.classList.add('flex'); 
+                    // if(nameDisplay) nameDisplay.textContent = ''; // No longer exists
+                } else {
+                    controlsContainer.classList.add('hidden');
+                    controlsContainer.classList.remove('flex');
+                    // if(nameDisplay) nameDisplay.textContent = ''; // No longer exists
+                }
             }
         }
         
@@ -993,33 +1033,122 @@
 
             audioCtx = getAudioContext();
             if (!audioCtx) return;
+             if (audioCtx.state === 'suspended') { 
+                audioCtx.resume().catch(e => console.error("Error resuming audio context:", e));
+            }
 
-            backgroundGainNode = audioCtx.createGain();
-            let volumeValue = parseFloat(backgroundVolumeSliderDropdown.value);
-            if (isNaN(volumeValue)) volumeValue = 0.1; 
-            backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
-            backgroundGainNode.connect(audioCtx.destination);
+            if (sound.src) { // MP3 playback
+                console.log("Attempting to play MP3:", sound.src); // Debug log for path
+                backgroundAudioElement = new Audio(sound.src);
+                backgroundAudioElement.loop = true;
+                
+                if (!backgroundAudioSourceNode || backgroundAudioSourceNode.mediaElement !== backgroundAudioElement) {
+                    if (backgroundAudioSourceNode) { try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */} }
+                    try { 
+                        backgroundAudioSourceNode = audioCtx.createMediaElementSource(backgroundAudioElement);
+                    } catch (e) {
+                        console.error("Error creating media element source for MP3:", e);
+                        return; 
+                    }
+                }
 
-            if (sound.type === 'whitenoise') { 
-                // This case is removed from BACKGROUND_SOUNDS
-            } else { 
-                backgroundOscillator1 = audioCtx.createOscillator();
-                backgroundOscillator2 = audioCtx.createOscillator();
-                backgroundOscillator1.type = 'sine';
-                backgroundOscillator2.type = 'sine';
-                backgroundOscillator1.frequency.setValueAtTime(sound.baseFreq - sound.beatFreq / 2, audioCtx.currentTime);
-                backgroundOscillator2.frequency.setValueAtTime(sound.baseFreq + sound.beatFreq / 2, audioCtx.currentTime);
-                backgroundOscillator1.connect(backgroundGainNode);
-                backgroundOscillator2.connect(backgroundGainNode);
-                backgroundOscillator1.start();
-                backgroundOscillator2.start();
+                backgroundGainNode = audioCtx.createGain();
+                let volumeValue = parseFloat(backgroundVolumeSliderMain.value);
+                if (isNaN(volumeValue)) volumeValue = 0.1; 
+                backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
+                
+                if(backgroundAudioSourceNode) { 
+                    backgroundAudioSourceNode.connect(backgroundGainNode);
+                    backgroundGainNode.connect(audioCtx.destination);
+                
+                    backgroundAudioElement.play().catch(error => {
+                        console.error(`Error playing MP3 (${sound.src}). Check path and browser permissions. Original error:`, error);
+                        // Fallback for Alpha/Beta if MP3 fails
+                        if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) {
+                            console.log("MP3 failed, attempting generated fallback for:", sound.name);
+                            playGeneratedBinauralSound(sound);
+                        } else {
+                            currentBackgroundSoundIndex = 0; 
+                            stopBackgroundSound(); 
+                            updateBackgroundSoundToggleVisual();
+                            saveState();
+                        }
+                    });
+                }
+            } else if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) { // Direct generation if no src
+                 console.log("Playing generated sound directly for:", sound.name);
+                 playGeneratedBinauralSound(sound);
             }
         }
 
+        function playGeneratedBinauralSound(soundDetails) {
+            // Ensure previous audio element source is stopped if it was playing
+            if (backgroundAudioElement) {
+                backgroundAudioElement.pause();
+                backgroundAudioElement.currentTime = 0;
+            }
+            if (backgroundAudioSourceNode) {
+                try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */}
+            }
+            
+            audioCtx = getAudioContext(); // Ensure context
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') { 
+                audioCtx.resume().catch(e => console.error("Error resuming audio context for generated sound:", e));
+            }
+
+            backgroundGainNode = audioCtx.createGain();
+            let volumeValue = parseFloat(backgroundVolumeSliderMain.value);
+            if (isNaN(volumeValue)) volumeValue = 0.1;
+            backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
+            backgroundGainNode.connect(audioCtx.destination);
+
+            backgroundFallbackOsc1 = audioCtx.createOscillator();
+            backgroundFallbackOsc2 = audioCtx.createOscillator();
+            backgroundFallbackOsc1.type = 'sine';
+            backgroundFallbackOsc2.type = 'sine';
+            backgroundFallbackOsc1.frequency.setValueAtTime(soundDetails.baseFreq - soundDetails.beatFreq / 2, audioCtx.currentTime);
+            backgroundFallbackOsc2.frequency.setValueAtTime(soundDetails.baseFreq + soundDetails.beatFreq / 2, audioCtx.currentTime);
+            backgroundFallbackOsc1.connect(backgroundGainNode);
+            backgroundFallbackOsc2.connect(backgroundGainNode);
+            backgroundFallbackOsc1.start();
+            backgroundFallbackOsc2.start();
+        }
+
+
+        function handleVolumeChange(event) {
+            const newVolume = parseFloat(event.target.value);
+            if (backgroundGainNode) {
+                if (!audioCtx) audioCtx = getAudioContext();
+                if (audioCtx) {
+                    backgroundGainNode.gain.setValueAtTime(newVolume, audioCtx.currentTime);
+                }
+            }
+            if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = newVolume;
+            saveState();
+        }
+
+
         function stopBackgroundSound() {
-            if (backgroundOscillator1) { backgroundOscillator1.stop(); backgroundOscillator1.disconnect(); backgroundOscillator1 = null; }
-            if (backgroundOscillator2) { backgroundOscillator2.stop(); backgroundOscillator2.disconnect(); backgroundOscillator2 = null; }
-            if (backgroundGainNode) { backgroundGainNode.disconnect(); backgroundGainNode = null; }
+            if (backgroundAudioElement) {
+                backgroundAudioElement.pause();
+                backgroundAudioElement.currentTime = 0; 
+            }
+            if (backgroundAudioSourceNode) {
+                try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */}
+            }
+            if (backgroundFallbackOsc1) { 
+                try { backgroundFallbackOsc1.stop(); backgroundFallbackOsc1.disconnect(); } catch(e) {/* ignore */}
+                backgroundFallbackOsc1 = null; 
+            }
+            if (backgroundFallbackOsc2) { 
+                try { backgroundFallbackOsc2.stop(); backgroundFallbackOsc2.disconnect(); } catch(e) {/* ignore */}
+                backgroundFallbackOsc2 = null; 
+            }
+            if (backgroundGainNode) {
+                try { backgroundGainNode.disconnect(); } catch(e) {/* ignore */}
+                backgroundGainNode = null;
+            }
         }
 
 
