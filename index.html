@@ -30,9 +30,12 @@
             --button-secondary-hover-bg-light: #4b5563; 
             --input-bg-light: #ffffff;
             --input-border-light: #d1d5db; 
-            --highlight-bg-light: rgba(250, 204, 21, 0.2); /* yellow-400 with opacity */
+            --highlight-bg-light: rgba(250, 204, 21, 0.2); 
             --intention-text-light: #4338ca; 
-            --intention-prompt-text-light: #facc15; /* yellow-400 */
+            --intention-prompt-text-light: #ca8a04; 
+            --intention-item-bg-light: #fef3c7; 
+            --sticky-note-bg-light: #fef9c3; 
+            --sticky-note-border-light: #fde047; 
 
 
             --bg-color-dark: #111827; 
@@ -46,9 +49,12 @@
             --button-secondary-hover-bg-dark: #6b7280; 
             --input-bg-dark: #374151; 
             --input-border-dark: #4b5563; 
-            --highlight-bg-dark: rgba(234, 179, 8, 0.25); /* yellow-500 with opacity */
-            --intention-text-dark: #fde047; /* yellow-300 */
-            --intention-prompt-text-dark: #fde047; /* yellow-300 */
+            --highlight-bg-dark: rgba(234, 179, 8, 0.25); 
+            --intention-text-dark: #fde047; 
+            --intention-prompt-text-dark: #fde047; 
+            --intention-item-bg-dark: #4b5563; 
+            --sticky-note-bg-dark: #374151; 
+            --sticky-note-border-dark: #78716c; 
         }
 
         body { font-family: var(--font-family-main); transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; }
@@ -71,14 +77,15 @@
         #start-pause-button:disabled { background-color: #9ca3af; cursor: not-allowed; } 
         #reset-button { background-color: var(--button-secondary-bg-light); color: white; }
         #reset-button:hover { background-color: var(--button-secondary-hover-bg-light); }
-        select, input[type="range"], input[type="text"] { background-color: var(--input-bg-light); border-color: var(--input-border-light); color: var(--text-color-light); }
+        select, input[type="range"], input[type="text"], textarea { background-color: var(--input-bg-light); border-color: var(--input-border-light); color: var(--text-color-light); }
         .modal-content { background-color: var(--card-bg-light); color: var(--text-color-light); }
-        #modal-ok-button, #help-modal-ok-button { background-color: var(--button-primary-bg-light); color: white; }
-        #modal-ok-button:hover, #help-modal-ok-button:hover { background-color: var(--button-primary-hover-bg-light); }
+        #modal-ok-button, #help-modal-ok-button, #notepad-save-button, #view-note-ok-button { background-color: var(--button-primary-bg-light); color: white; }
+        #modal-ok-button:hover, #help-modal-ok-button:hover, #notepad-save-button:hover, #view-note-ok-button:hover { background-color: var(--button-primary-hover-bg-light); }
         .message-highlight-base { transition: background-color 0.3s ease-out; }
         .message-highlight-active { background-color: var(--highlight-bg-light); animation: highlight-fade-light 1.5s ease-out; }
         @keyframes highlight-fade-light { 0% { background-color: var(--highlight-bg-light); } 100% { background-color: transparent; } }
-        #intention-display { color: var(--intention-text-light); /* Background removed for cleaner look */ }
+        #intention-display { color: var(--intention-text-light); }
+        .sticky-note { background-color: var(--sticky-note-bg-light); border-color: var(--sticky-note-border-light); }
         
         body.dark { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
         body.dark #app-container { background-color: var(--card-bg-dark); box-shadow: var(--card-shadow-dark); }
@@ -89,20 +96,22 @@
         body.dark #start-pause-button:disabled { background-color: #4b5563; } 
         body.dark #reset-button { background-color: var(--button-secondary-bg-dark); color: var(--bg-color-dark); }
         body.dark #reset-button:hover { background-color: var(--button-secondary-hover-bg-dark); }
-        body.dark select, body.dark input[type="range"], body.dark input[type="text"] { background-color: var(--input-bg-dark); border-color: var(--input-border-dark); color: var(--text-color-dark); }
+        body.dark select, body.dark input[type="range"], body.dark input[type="text"], body.dark textarea { background-color: var(--input-bg-dark); border-color: var(--input-border-dark); color: var(--text-color-dark); }
         body.dark .modal-content { background-color: var(--card-bg-dark); color: var(--text-color-dark); }
-        body.dark #modal-ok-button, body.dark #help-modal-ok-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
-        body.dark #modal-ok-button:hover, body.dark #help-modal-ok-button:hover { background-color: var(--button-primary-hover-bg-dark); }
+        body.dark #modal-ok-button, body.dark #help-modal-ok-button, body.dark #notepad-save-button, body.dark #view-note-ok-button { background-color: var(--button-primary-bg-dark); color: var(--bg-color-dark); }
+        body.dark #modal-ok-button:hover, body.dark #help-modal-ok-button:hover, body.dark #notepad-save-button:hover, body.dark #view-note-ok-button:hover { background-color: var(--button-primary-hover-bg-dark); }
         body.dark .pomodoro-count-bg { background-color: rgba(255, 255, 255, 0.1); }
         body.dark button.icon-button { color: var(--text-color-dark); }
         body.dark button.icon-button:hover { background-color: rgba(255, 255, 255, 0.1); }
         body.dark .message-highlight-active { background-color: var(--highlight-bg-dark); animation: highlight-fade-dark 1.5s ease-out; }
         @keyframes highlight-fade-dark { 0% { background-color: var(--highlight-bg-dark); } 100% { background-color: transparent; } }
         body.dark #intention-display { color: var(--intention-text-dark); }
+        body.dark .intention-item-container { background-color: var(--intention-item-bg-dark); }
+        body.dark .sticky-note { background-color: var(--sticky-note-bg-dark); border-color: var(--sticky-note-border-dark); }
 
 
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); }
-        .modal-content { margin: 15% auto; padding: 20px; border: 1px solid #4b5563; width: 80%; max-width: 400px; border-radius: 8px; text-align: center; }
+        .modal-content { margin: 10% auto; padding: 20px; border: 1px solid #4b5563; width: 80%; max-width: 450px; border-radius: 8px; text-align: center; }
         .active-pressed { transform: scale(0.95); filter: brightness(0.9); }
         .pomodoro-count-bg { background-color: rgba(0, 0, 0, 0.05); padding: 0.25rem 0.5rem; border-radius: 0.375rem; display: inline-block; white-space: nowrap; }
         .icon-button { padding: 0.5rem; border-radius: 9999px; transition: background-color 0.2s, transform 0.1s; }
@@ -198,22 +207,46 @@
         body.dark input[type="range"].volume-slider::-moz-range-thumb { background: var(--primary-accent-dark); }
         body.dark input[type="range"].volume-slider { background: #4b5563; } 
 
-        #intention-display {
-            font-size: 0.875rem; 
+        #intention-display { 
             margin-top: 1.5rem; 
             margin-bottom: 0.75rem; 
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem; 
-            min-height: 1.75rem; 
-            font-style: italic;
             text-align: center;
-            line-height: 1.4; 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
         }
-        .intention-item { display: block; }
-        .intention-item-1 { font-size: 0.875rem; } 
-        .intention-item-2 { font-size: 0.75rem; opacity: 0.8; margin-left: 0.5rem; } 
-        .intention-item-3 { font-size: 0.75rem; opacity: 0.7; margin-left: 1rem; } 
+        .intention-item-container { 
+            padding: 0.5rem 0.75rem; 
+            margin-bottom: 20px; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            background-color: var(--intention-item-bg-light);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            color: var(--intention-text-light);
+            text-align: left;
+            position: relative; 
+        }
+        body.dark .intention-item-container { background-color: var(--intention-item-bg-dark); color: var(--intention-text-dark); }
 
+        .intention-item-container-0 { width: 100%; }
+        .intention-item-container-1 { width: 90%; } 
+        .intention-item-container-2 { width: 80%; } 
+
+
+        .intention-item { display: block; font-style: italic;}
+        .intention-item-main { font-size: 1rem; font-weight: 600; } 
+        .intention-item-sub { font-size: 0.875rem; opacity: 0.9; } 
+        .intention-action-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.1rem;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+            opacity: 0.6;
+        }
+        .intention-action-button:hover { opacity: 1; }
+        
         #intention-input {
             border-radius: 0.375rem;
             padding: 0.375rem 0.5rem;
@@ -221,7 +254,7 @@
         }
         #animated-highlight {
             position: absolute;
-            border-radius: 0.375rem; 
+            border-radius: 0.5rem; 
             background-color: var(--highlight-bg-light);
             transition: top 0.4s ease-in-out, left 0.4s ease-in-out, width 0.4s ease-in-out, height 0.4s ease-in-out, opacity 0.3s ease-in-out;
             opacity: 0;
@@ -229,6 +262,52 @@
             z-index: 0; 
         }
         body.dark #animated-highlight { background-color: var(--highlight-bg-dark); }
+        
+        .sticky-note {
+            background-color: var(--sticky-note-bg-light);
+            border: 1px solid var(--sticky-note-border-light);
+            color: var(--text-color-light);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem;
+            font-size: 0.75rem; 
+            line-height: 1rem;
+            width: 70px; 
+            height: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        body.dark .sticky-note {
+             background-color: var(--sticky-note-bg-dark);
+             border-color: var(--sticky-note-border-dark);
+             color: var(--text-color-dark);
+        }
+        #sticky-notes-display-area {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        /* Pulsating highlight for BG music button */
+        .pulsate-highlight {
+            animation: pulsate 1.5s infinite alternate;
+        }
+        @keyframes pulsate {
+            0% { box-shadow: 0 0 0 0px rgba(250, 204, 21, 0.4); } /* yellow-400 */
+            100% { box-shadow: 0 0 0 6px rgba(250, 204, 21, 0); }
+        }
+        body.dark .pulsate-highlight {
+            animation: pulsate-dark 1.5s infinite alternate;
+        }
+        @keyframes pulsate-dark {
+            0% { box-shadow: 0 0 0 0px rgba(234, 179, 8, 0.5); } /* yellow-500 */
+            100% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
+        }
 
 
     </style>
@@ -246,6 +325,7 @@
                     <div class="flex items-center">
                         <label for="work-duration" class="duration-setting-label">Focus:</label>
                         <select id="work-duration" class="compact-select flex-grow"> 
+
                             <option value="1">1m</option><option value="15">15m</option><option value="20">20m</option>
                             <option value="25" selected>25m</option><option value="30">30m</option><option value="45">45m</option>
                         </select>
@@ -276,6 +356,14 @@
                                     <span class="font-medium">Pop-up Alerts:</span>
                                     <button id="overlay-alerts-toggle" title="Toggle Pop-up Alerts" aria-label="Toggle Pop-up Alerts" class="icon-button text-xl ml-auto">💬</button>
                                 </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Save Session Log:</span>
+                                    <button id="save-session-log-toggle" title="Toggle Session Log Saving" aria-label="Toggle Session Log Saving" class="icon-button text-xl ml-auto">💾</button>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium">Intention Actions:</span>
+                                    <button id="intention-actions-toggle" title="Toggle Intention Actions" aria-label="Toggle Intention Actions" class="icon-button text-xl ml-auto">🛠️</button> 
+                                </div>
                                 <div class="pt-2 border-t border-gray-200 dark:border-gray-700">
                                     <button id="advanced-settings-toggle-inner" title="Breaks settings" aria-label="Breaks settings" class="w-full text-left flex justify-between items-center py-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md px-1">
                                         <span>Breaks settings</span> <span class="text-xl">☕</span>
@@ -304,16 +392,20 @@
                 </div>
             </div>
             <br>
-            <div id="message-area-container" class="text-lg font-semibold h-10 mb-5 rounded-md px-2 text-center flex flex-col justify-center items-center relative"> 
+            <div id="message-area-container" class="text-lg font-semibold h-10 mb-6 rounded-md px-2 text-center flex flex-col justify-center items-center relative"> 
                 <div id="message-area" class="message-highlight-base">Ready?</div>
                 <div id="intention-input-area" class="hidden w-full max-w-xs mt-1">
                     <input type="text" id="intention-input" placeholder="My focus for this bloom..." maxlength="70" class="w-full border p-1.5 text-sm rounded-md shadow-sm">
                     <button id="set-intention-button" class="mt-1 bg-indigo-500 hover:bg-indigo-600 text-white text-xs py-1 px-3 rounded-md shadow">Set</button>
                 </div>
             </div>
-             <div id="intention-display" class="text-center hidden"></div>
+             <div id="intention-display" class="text-center hidden">
+             </div>
         </header>
         
+        <div id="sticky-notes-display-area" class="flex flex-wrap justify-center gap-2 mb-4">
+        </div>
+
         <div id="plant-display-area" class="mb-1 h-48 w-full mx-auto">
             <svg id="plant-svg" viewBox="0 0 300 100" class="w-full h-full">
                 <rect id="pot-rect" x="105" y="90" width="90" height="10" rx="3" ry="3" fill="#A0522D" />
@@ -360,7 +452,9 @@
                 <button id="start-pause-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Start</button>
                 <button id="reset-button" class="font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-150 ease-in-out active:scale-95 active:brightness-90 text-lg">Reset</button>
             </div>
-            <div class="w-10"></div> 
+            <div class="flex items-center space-x-1 mr-3">
+                <button id="notepad-toggle-button" title="Open Notepad" aria-label="Open Notepad" class="icon-button text-2xl">📝</button>
+            </div>
         </div>
     </div>
 
@@ -378,13 +472,35 @@
         <div class="modal-content">
             <h3 class="text-xl font-semibold mb-3">How to Use Focus Grow</h3>
             <p class="text-sm text-left mb-2">
-                Set a clear intention for each plant's growth cycle (one main focus). Each completed Pomodoro (focus session) helps your plant bloom.
-                Focus during work sprints, take your breaks, and watch your garden flourish as you achieve your goals!
+                Boost your productivity! Set a main focus and two smaller, actionable steps for each "bloom" cycle (max 70 chars each). 
+                Each completed Pomodoro helps your plant grow. Completed intentions are logged daily (if enabled in settings).
             </p>
             <p class="text-xs text-left mb-4">
-                Customize timers and sounds via the ⚙️ settings. Toggle background music with 🎧.
+                Use ⚙️ for timer settings & alerts. Toggle background music with 🎧 and add quick notes (📝, max 3 notes, 25 chars each).
             </p>
             <button id="help-modal-ok-button" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">Got it!</button>
+        </div>
+    </div>
+
+    <div id="notepad-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-3">Quick Note</h3>
+            <textarea id="notepad-textarea" rows="4" class="w-full p-2 border rounded-md text-sm" placeholder="Jot down a quick thought... (max 25 chars)"></textarea>
+            <div class="mt-3 flex justify-end">
+                <button id="notepad-save-button" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-note-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-3">Note</h3>
+            <p id="full-note-text" class="text-sm text-left mb-4 whitespace-pre-wrap"></p>
+             <div class="mt-4 flex justify-end space-x-2">
+                <button id="view-note-edit-button" class="icon-button text-lg" title="Edit Note">✏️</button>
+                <button id="view-note-delete-button" class="icon-button text-lg" title="Delete Note">🗑️</button>
+                <button id="view-note-ok-button" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-1 px-3 rounded-lg text-sm">Close</button>
+            </div>
         </div>
     </div>
 
@@ -398,7 +514,10 @@
             backgroundSoundToggleMain, backgroundSoundControlsMain, backgroundVolumeSliderMain,
             overlayAlertsToggle, advancedSettingsToggleInner, advancedSettingsPanelInner, 
             longBreakIntervalSelect, longBreakDurationSelect, body, notificationModal, modalMessage, 
-            modalOkButton, modalDisableAlertsButton, helpButton, helpModal, helpModalOkButton;
+            modalOkButton, modalDisableAlertsButton, helpButton, helpModal, helpModalOkButton,
+            notepadToggleButton, notepadModal, notepadTextarea, notepadSaveButton, stickyNotesDisplayArea,
+            viewNoteModal, fullNoteText, viewNoteOkButton, viewNoteEditButton, viewNoteDeleteButton,
+            saveSessionLogToggle, intentionActionsToggle; 
         let plantSlots = []; 
 
         // App State
@@ -415,7 +534,12 @@
         const STAGES_PER_PLANT = 5; 
         const POMODOROS_PER_STAGE = 1; 
         let plantStates = []; 
-        let currentIntentions = []; // Single intention per plant
+        let currentPlantIntentions = []; 
+        let stickyNotes = [];
+        const MAX_STICKY_NOTES = 3;
+        const STICKY_NOTE_CHAR_LIMIT = 25; 
+        let editingStickyNoteIndex = -1; 
+
 
         const PLANT_EMOJIS_BY_STAGE = ['🌱', '🌿', '🪴', '🌸', '🌳'];
         const PLANT_SLOT_CONFIGS = {
@@ -435,6 +559,7 @@
 
         const BACKGROUND_SOUNDS = [ 
             { key: 'off', name: 'Off', emoji: '🎧', remark: '', src: null },
+            { key: 'alpha', name: 'Alpha Waves', emoji: '🧠', remark: '(mild focus)', src: 'alpha_4_5_clip.mp3', fallbackType: 'binaural', baseFreq: 200, beatFreq: 10 }, 
             { key: 'guitar', name: 'Soft Guitar', emoji: '🎸', remark: '(relaxing)', src: 'soft_guitar_23_trim.mp3' },  
             { key: 'waves', name: 'Silent Waves', emoji: '🌊', remark: '(calming)', src: 'silent_waves_27_trim.mp3' },  
         ];
@@ -442,13 +567,21 @@
         let backgroundAudioElement; 
         let backgroundAudioSourceNode; 
         let backgroundGainNode;
+        let backgroundFallbackOsc1; 
+        let backgroundFallbackOsc2; 
+        let bgMusicInteracted = false; 
         
         let isDarkMode = true; 
         let longBreakInterval = 4; 
         let longBreakDuration = 15 * 60; 
         let showOverlayAlerts = true; 
+        let saveSessionLogs = false; 
+        let showIntentionActions = true; 
+
         const INTENTION_CHAR_LIMIT = 70;
         const HIGHLIGHT_PADDING = 6; 
+        const MAX_INTENTIONS_PER_PLANT = 3;
+        let highlightTimeoutId = null; 
 
         // --- Initialization ---
         function init() {
@@ -479,6 +612,8 @@
             backgroundVolumeSliderMain = document.getElementById('background-volume-slider-main');
 
             overlayAlertsToggle = document.getElementById('overlay-alerts-toggle');
+            saveSessionLogToggle = document.getElementById('save-session-log-toggle');
+            intentionActionsToggle = document.getElementById('intention-actions-toggle');
             advancedSettingsToggleInner = document.getElementById('advanced-settings-toggle-inner'); 
             advancedSettingsPanelInner = document.getElementById('advanced-settings-panel-inner'); 
             longBreakIntervalSelect = document.getElementById('long-break-interval'); 
@@ -487,6 +622,17 @@
             helpButton = document.getElementById('help-button');
             helpModal = document.getElementById('help-modal');
             helpModalOkButton = document.getElementById('help-modal-ok-button');
+
+            notepadToggleButton = document.getElementById('notepad-toggle-button');
+            notepadModal = document.getElementById('notepad-modal');
+            notepadTextarea = document.getElementById('notepad-textarea');
+            notepadSaveButton = document.getElementById('notepad-save-button');
+            stickyNotesDisplayArea = document.getElementById('sticky-notes-display-area');
+            viewNoteModal = document.getElementById('view-note-modal');
+            fullNoteText = document.getElementById('full-note-text');
+            viewNoteOkButton = document.getElementById('view-note-ok-button');
+            viewNoteEditButton = document.getElementById('view-note-edit-button');
+            viewNoteDeleteButton = document.getElementById('view-note-delete-button');
             
             body = document.body;
             notificationModal = document.getElementById('notification-modal');
@@ -504,11 +650,14 @@
             updateAlertSoundToggleVisual();
             updateBackgroundSoundToggleVisual(); 
             updateOverlayAlertsToggleVisual(); 
+            updateSaveSessionLogToggleVisual();
+            updateIntentionActionsToggleVisual();
             updatePotAndPlantPositions(getPreparedSlotCount(), false); 
+            renderStickyNotes();
             checkAndPromptForIntention();
 
 
-            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, overlayAlertsToggle, advancedSettingsToggleInner, setIntentionButton, modalDisableAlertsButton, backgroundSoundToggleMain, helpButton, helpModalOkButton].forEach(button => {
+            [startPauseButton, resetButton, modalOkButton, mainSettingsToggle, themeToggleButton, alertSoundToggleButton, overlayAlertsToggle, saveSessionLogToggle, intentionActionsToggle, advancedSettingsToggleInner, setIntentionButton, modalDisableAlertsButton, backgroundSoundToggleMain, helpButton, helpModalOkButton, notepadToggleButton, notepadSaveButton, viewNoteOkButton, viewNoteEditButton, viewNoteDeleteButton].forEach(button => {
                 if(button !== null && typeof button !== 'undefined') { 
                     button.addEventListener('mousedown', () => button.classList.add('active-pressed'));
                     button.addEventListener('mouseup', () => button.classList.remove('active-pressed'));
@@ -534,6 +683,9 @@
             }
             
             overlayAlertsToggle.addEventListener('click', toggleOverlayAlerts);
+            saveSessionLogToggle.addEventListener('click', toggleSaveSessionLog);
+            intentionActionsToggle.addEventListener('click', toggleIntentionActions);
+
             advancedSettingsToggleInner.addEventListener('click', (event) => {
                  event.stopPropagation(); 
                  advancedSettingsPanelInner.classList.toggle('open');
@@ -541,6 +693,27 @@
             
             if(helpButton) helpButton.addEventListener('click', () => { if(helpModal) helpModal.style.display = 'block'; });
             if(helpModalOkButton) helpModalOkButton.addEventListener('click', () => { if(helpModal) helpModal.style.display = 'none'; });
+            
+            if(notepadToggleButton) notepadToggleButton.addEventListener('click', () => {
+                if(notepadModal) {
+                    notepadTextarea.value = ''; 
+                    editingStickyNoteIndex = -1; 
+                    notepadModal.style.display = 'block';
+                    notepadTextarea.focus();
+                }
+            });
+            if(notepadSaveButton) notepadSaveButton.addEventListener('click', handleSaveNotepad);
+            if(viewNoteOkButton) viewNoteOkButton.addEventListener('click', () => { if(viewNoteModal) viewNoteModal.style.display = 'none';})
+            if(viewNoteEditButton) viewNoteEditButton.addEventListener('click', () => {
+                if(viewNoteModal.dataset.noteIndex !== undefined) {
+                    editStickyNote(parseInt(viewNoteModal.dataset.noteIndex));
+                }
+            });
+            if(viewNoteDeleteButton) viewNoteDeleteButton.addEventListener('click', () => {
+                 if(viewNoteModal.dataset.noteIndex !== undefined) {
+                    deleteStickyNote(parseInt(viewNoteModal.dataset.noteIndex));
+                }
+            });
 
 
             longBreakIntervalSelect.addEventListener('change', () => { updateAdvancedSettings(); saveState(); });
@@ -582,6 +755,12 @@
                  if (helpModal && helpModal.style.display === 'block' && helpModalOkButton && !helpModal.querySelector('.modal-content').contains(event.target) && event.target !== helpButton) {
                     helpModal.style.display = 'none';
                 }
+                if (notepadModal && notepadModal.style.display === 'block' && notepadSaveButton && !notepadModal.querySelector('.modal-content').contains(event.target) && event.target !== notepadToggleButton) {
+                    notepadModal.style.display = 'none';
+                }
+                if (viewNoteModal && viewNoteModal.style.display === 'block' && viewNoteOkButton && !viewNoteModal.querySelector('.modal-content').contains(event.target) && event.target !== viewNoteEditButton && event.target !== viewNoteDeleteButton) {
+                    viewNoteModal.style.display = 'none';
+                }
             });
 
             workDurationSelect.value = workDuration / 60;
@@ -596,25 +775,33 @@
                  audioCtx = getAudioContext(); 
                  if(audioCtx) playCurrentBackgroundSound(); 
             }
+            
+            if (!bgMusicInteracted && backgroundSoundToggleMain) {
+                backgroundSoundToggleMain.classList.add('ring-2', 'ring-yellow-400', 'ring-opacity-75');
+            }
         }
 
         // --- LocalStorage ---
         function saveState() {
             const state = {
                 workDuration: workDurationSelect.value, breakDuration: breakDurationSelect.value,
-                totalPomodoros, pomodorosInCycle, plantStates, currentIntentions, 
+                totalPomodoros, pomodorosInCycle, plantStates, currentPlantIntentions, 
                 currentAlertSoundIndex, isDarkMode,
                 longBreakInterval: longBreakIntervalSelect.value, 
                 longBreakDuration: longBreakDurationSelect.value, 
                 currentBackgroundSoundIndex,
                 backgroundVolume: parseFloat(backgroundVolumeSliderMain && backgroundVolumeSliderMain.value ? backgroundVolumeSliderMain.value : 0.1), 
-                showOverlayAlerts 
+                showOverlayAlerts,
+                bgMusicInteracted,
+                stickyNotes,
+                saveSessionLogs, 
+                showIntentionActions
             };
-            localStorage.setItem('pomodoroGrowthAppV17', JSON.stringify(state)); 
+            localStorage.setItem('pomodoroGrowthAppV18', JSON.stringify(state)); 
         }
 
         function loadState() {
-            const savedState = localStorage.getItem('pomodoroGrowthAppV17'); 
+            const savedState = localStorage.getItem('pomodoroGrowthAppV18'); 
             if (savedState) {
                 const state = JSON.parse(savedState);
                 workDurationSelect.value = state.workDuration || 25;
@@ -622,14 +809,21 @@
                 totalPomodoros = state.totalPomodoros || 0;
                 pomodorosInCycle = state.pomodorosInCycle || 0;
                 plantStates = state.plantStates || Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
-                currentIntentions = state.currentIntentions || Array(MAX_PLANTS).fill("");
+                currentPlantIntentions = state.currentPlantIntentions || Array(MAX_PLANTS).fill(null).map(() => []);
+
+                for(let i = 0; i < MAX_PLANTS; i++) {
+                    if (!Array.isArray(currentPlantIntentions[i])) {
+                        currentPlantIntentions[i] = [];
+                    }
+                }
 
                 if (plantStates.length < MAX_PLANTS) {
-                    plantStates = plantStates.concat(Array(MAX_PLANTS - plantStates.length).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 })));
-                    currentIntentions = currentIntentions.concat(Array(MAX_PLANTS - currentIntentions.length).fill(""));
+                    const diff = MAX_PLANTS - plantStates.length;
+                    plantStates = plantStates.concat(Array(diff).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 })));
+                    currentPlantIntentions = currentPlantIntentions.concat(Array(diff).fill(null).map(() => []));
                 } else if (plantStates.length > MAX_PLANTS) {
                     plantStates = plantStates.slice(0, MAX_PLANTS);
-                    currentIntentions = currentIntentions.slice(0, MAX_PLANTS);
+                    currentPlantIntentions = currentPlantIntentions.slice(0, MAX_PLANTS);
                 }
 
                 currentAlertSoundIndex = state.currentAlertSoundIndex || 0;
@@ -642,14 +836,22 @@
                 if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = savedVolume;
 
                 showOverlayAlerts = typeof state.showOverlayAlerts === 'boolean' ? state.showOverlayAlerts : true;
+                bgMusicInteracted = typeof state.bgMusicInteracted === 'boolean' ? state.bgMusicInteracted : false;
+                stickyNotes = state.stickyNotes || [];
+                saveSessionLogs = typeof state.saveSessionLogs === 'boolean' ? state.saveSessionLogs : false;
+                showIntentionActions = typeof state.showIntentionActions === 'boolean' ? state.showIntentionActions : true;
 
 
             } else { 
                 isDarkMode = true; 
                 plantStates = Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
-                currentIntentions = Array(MAX_PLANTS).fill("");
+                currentPlantIntentions = Array(MAX_PLANTS).fill(null).map(() => []);
                 if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = 0.1;
                 showOverlayAlerts = true;
+                bgMusicInteracted = false;
+                stickyNotes = [];
+                saveSessionLogs = false;
+                showIntentionActions = true;
             }
             updateDurations(); 
             updateAdvancedSettings();
@@ -658,27 +860,31 @@
 
         // --- Intention Logic ---
         function getActivePlantIndexForIntention() {
-            let activeIndex = plantStates.findIndex(p => p.stage < STAGES_PER_PLANT -1 && currentIntentions[plantStates.indexOf(p)]);
-            if (activeIndex === -1) {
-                 activeIndex = plantStates.findIndex((p,i) => p.stage === 0 && p.pomosTowardsNextStage === 0 && !currentIntentions[i]);
-                 if(activeIndex === -1) { 
-                    activeIndex = plantStates.findIndex((p,i) => p.stage === 0 && !currentIntentions[i]);
-                    if(activeIndex === -1 && plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
-                        activeIndex = 0; 
-                    } else if (activeIndex === -1) {
-                        activeIndex = 0; 
+            for (let i = 0; i < MAX_PLANTS; i++) {
+                if (plantStates[i].stage < STAGES_PER_PLANT - 1) { 
+                    if (!currentPlantIntentions[i] || currentPlantIntentions[i].length < MAX_INTENTIONS_PER_PLANT) {
+                        return i; 
                     }
-                 }
+                }
             }
-            return activeIndex !== -1 ? activeIndex : 0;
+            let firstSeedIndex = plantStates.findIndex((p, i) => p.stage === 0 && p.pomosTowardsNextStage === 0 && (!currentPlantIntentions[i] || currentPlantIntentions[i].length === 0) );
+            if (firstSeedIndex !== -1) return firstSeedIndex;
+            
+            if (plantStates.every(p => p.stage === STAGES_PER_PLANT - 1)) {
+                return 0; 
+            }
+            let fallbackIndex = plantStates.findIndex(p => p.stage < STAGES_PER_PLANT -1);
+            return fallbackIndex !== -1 ? fallbackIndex : 0;
         }
         
         function positionHighlight(targetElement) {
+            if (!animatedHighlight) return; 
             if (!targetElement || !targetElement.offsetParent) { 
                 animatedHighlight.style.opacity = '0';
                 return;
             }
             const appContainer = document.getElementById('app-container');
+            if (!appContainer) return; 
             const appContainerRect = appContainer.getBoundingClientRect();
             const targetRect = targetElement.getBoundingClientRect();
 
@@ -693,13 +899,24 @@
         function checkAndPromptForIntention() {
             const activePlantIdx = getActivePlantIndexForIntention();
             const plant = plantStates[activePlantIdx];
-            
+            const intentionsForPlant = currentPlantIntentions[activePlantIdx] || [];
+
             intentionInputArea.classList.add('hidden'); 
             intentionDisplay.classList.add('hidden');   
-            animatedHighlight.style.opacity = '0';  
+            if(animatedHighlight) animatedHighlight.style.opacity = '0';  
 
-            if (plant && plant.stage === 0 && !currentIntentions[activePlantIdx]) {
-                messageArea.innerHTML = `<button id="intention-prompt-button" class="font-semibold text-yellow-500 dark:text-yellow-400 hover:underline text-lg">🎯 Add Intention for this Bloom</button>`;
+            if (plant && plant.stage === 0 && intentionsForPlant.length < MAX_INTENTIONS_PER_PLANT) {
+                let promptText = "🎯 Add Main Focus";
+                let placeholderText = "My focus: Draft intro paragraph";
+                if (intentionsForPlant.length === 1) {
+                    promptText = "🎯 Next action to get there?";
+                    placeholderText = "e.g., Outline key points";
+                } else if (intentionsForPlant.length === 2) {
+                    promptText = "🎯 And the next action?";
+                    placeholderText = "e.g., Write first draft";
+                }
+                messageArea.innerHTML = `<button id="intention-prompt-button" class="font-semibold text-yellow-600 dark:text-yellow-400 hover:underline text-lg">${promptText}</button>`;
+                intentionInput.placeholder = placeholderText;
                 const promptButton = document.getElementById('intention-prompt-button');
                 if(promptButton) { 
                     promptButton.addEventListener('click', showIntentionInput);
@@ -707,13 +924,11 @@
                 }
                 startPauseButton.disabled = true;
                 startPauseButton.textContent = 'Start'; 
-            } else if (plant && currentIntentions[activePlantIdx]) {
+            } else if (plant && intentionsForPlant.length === MAX_INTENTIONS_PER_PLANT) {
                 messageArea.textContent = isRunning ? messageArea.textContent : "Ready?"; 
-                intentionDisplay.textContent = `Focus: ${currentIntentions[activePlantIdx]}`;
-                intentionDisplay.classList.remove('hidden'); 
-                startPauseButton.disabled = false;
-                if (!isRunning) startPauseButton.textContent = 'Start'; 
-                setTimeout(() => positionHighlight(intentionDisplay), 50); 
+                displayIntentionsFunnel(activePlantIdx); 
+                startPauseButton.disabled = false; 
+                if (!isRunning) {startPauseButton.textContent = 'Start';}
             } else {
                  messageArea.textContent = "Ready?";
                  startPauseButton.disabled = false; 
@@ -721,27 +936,168 @@
             }
         }
 
-        function showIntentionInput() {
-            messageArea.textContent = "Set your focus:";
-            intentionInputArea.classList.remove('hidden'); 
-            intentionInput.value = '';
-            intentionInput.focus();
-            setTimeout(() => positionHighlight(intentionInputArea), 50);
+        function displayIntentionsFunnel(plantIndex) {
+            intentionDisplay.innerHTML = ''; 
+            const intentions = currentPlantIntentions[plantIndex] || [];
+            let lastUnfinishedItemContainer = null; 
+
+            if (intentions.length > 0) {
+                intentions.forEach((intentionObj, i) => { 
+                    const itemContainer = document.createElement('div'); 
+                    itemContainer.id = `intention-item-container-${plantIndex}-${i}`;
+                    itemContainer.classList.add('intention-item-container', `intention-item-container-${i}`, 'flex', 'justify-between', 'items-center'); 
+                    if (i === 0) itemContainer.classList.add('w-full');
+                    else if (i === 1) itemContainer.classList.add('w-11/12', 'mx-auto'); 
+                    else if (i === 2) itemContainer.classList.add('w-10/12', 'mx-auto'); 
+
+
+                    const itemText = document.createElement('span');
+                    itemText.textContent = `${i+1}. ${intentionObj.text}`;
+                    itemText.classList.add('intention-item', `intention-item-${i+1}`, 'font-semibold', 'flex-grow'); 
+                    if (intentionObj.done) itemText.classList.add('line-through', 'opacity-50');
+                    if (i === 0) itemText.classList.add('text-lg'); 
+                    else itemText.classList.add('text-base'); 
+
+                    itemContainer.appendChild(itemText);
+
+                    if(showIntentionActions && !intentionObj.done){
+                        const actionsWrapper = document.createElement('div');
+                        actionsWrapper.classList.add('ml-2', 'flex', 'space-x-1');
+
+                        const editBtn = document.createElement('button');
+                        editBtn.innerHTML = '✏️';
+                        editBtn.classList.add('intention-action-button');
+                        editBtn.title = "Edit Intention";
+                        editBtn.onclick = (e) => { e.stopPropagation(); editPlantIntention(plantIndex, i); };
+                        actionsWrapper.appendChild(editBtn);
+
+                        const doneBtn = document.createElement('button');
+                        doneBtn.innerHTML = '✅';
+                        doneBtn.classList.add('intention-action-button');
+                        doneBtn.title = "Mark as Done";
+                        doneBtn.onclick = (e) => { e.stopPropagation(); markIntentionDone(plantIndex, i); };
+                        actionsWrapper.appendChild(doneBtn);
+                        itemContainer.appendChild(actionsWrapper);
+                    }
+                    intentionDisplay.appendChild(itemContainer);
+                    if (!intentionObj.done) { 
+                        lastUnfinishedItemContainer = itemContainer; 
+                    }
+                });
+                intentionDisplay.classList.remove('hidden');
+                
+                if (lastUnfinishedItemContainer) { 
+                    setTimeout(() => positionHighlight(lastUnfinishedItemContainer), 50);
+                } else if (intentions.length === MAX_INTENTIONS_PER_PLANT) { // All are done
+                    setTimeout(() => positionHighlight(intentionDisplay), 50); 
+                }
+
+
+            } else {
+                intentionDisplay.classList.add('hidden');
+            }
         }
 
-        function handleSetIntention() {
-            const activePlantIdx = getActivePlantIndexForIntention();
-            const intentionText = intentionInput.value.trim();
-            if (intentionText && intentionText.length <= INTENTION_CHAR_LIMIT) {
-                currentIntentions[activePlantIdx] = intentionText;
-                intentionDisplay.textContent = `Focus: ${intentionText}`;
-                intentionDisplay.classList.remove('hidden'); 
-                intentionInputArea.classList.add('hidden');
-                messageArea.textContent = "Ready?"; 
-                startPauseButton.disabled = false;
-                startPauseButton.textContent = 'Start';
+
+        function showIntentionInput(editingPlantIdx = -1, editingIntentionIdx = -1) {
+            const activePlantIdx = editingPlantIdx !== -1 ? editingPlantIdx : getActivePlantIndexForIntention();
+            const intentionsForPlant = currentPlantIntentions[activePlantIdx] || [];
+            let currentIntentionCount = editingPlantIdx !== -1 ? editingIntentionIdx : intentionsForPlant.filter(item => item && item.text).length;
+            
+            if (editingIntentionIdx !== -1) { 
+                intentionInput.value = intentionsForPlant[editingIntentionIdx].text;
+                setIntentionButton.textContent = "Update";
+            } else {
+                intentionInput.value = '';
+                setIntentionButton.textContent = "Set";
+            }
+
+
+            let promptMessage = "🎯 Add Main Focus for this Bloom";
+            let placeholderText = "My focus: Draft intro paragraph";
+
+            if (currentIntentionCount === 1) {
+                promptMessage = "🎯 Next action to get there?";
+                placeholderText = "e.g., Outline key points";
+            } else if (currentIntentionCount === 2) {
+                promptMessage = "🎯 And the next action?";
+                placeholderText = "e.g., Write first draft";
+            }
+            
+            messageArea.textContent = promptMessage;
+            intentionInput.placeholder = placeholderText;
+            intentionInputArea.classList.remove('hidden'); 
+            intentionInput.focus();
+            setTimeout(() => positionHighlight(intentionInputArea), 50);
+            intentionInputArea.dataset.editingPlantIdx = editingPlantIdx;
+            intentionInputArea.dataset.editingIntentionIdx = editingIntentionIdx;
+
+        }
+        function editPlantIntention(plantIdx, intentionIdx) {
+            showIntentionInput(plantIdx, intentionIdx);
+        }
+
+        function markIntentionDone(plantIdx, intentionIdx){
+            if(currentPlantIntentions[plantIdx] && currentPlantIntentions[plantIdx][intentionIdx]){
+                currentPlantIntentions[plantIdx][intentionIdx].done = true;
+                
+                const celebraCtx = getAudioContext();
+                if (celebraCtx) {
+                    const osc = celebraCtx.createOscillator();
+                    const gain = celebraCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(880, celebraCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(1318.51, celebraCtx.currentTime + 0.1); 
+                    gain.gain.setValueAtTime(0.05, celebraCtx.currentTime); 
+                    gain.gain.exponentialRampToValueAtTime(0.0001, celebraCtx.currentTime + 0.2);
+                    osc.connect(gain);
+                    gain.connect(celebraCtx.destination);
+                    osc.start();
+                    osc.stop(celebraCtx.currentTime + 0.2);
+                }
+
+                displayIntentionsFunnel(plantIdx); 
                 saveState();
-                setTimeout(() => positionHighlight(intentionDisplay), 50); 
+            }
+        }
+
+
+        function handleSetIntention() {
+            const editingPlantIdx = parseInt(intentionInputArea.dataset.editingPlantIdx);
+            const editingIntentionIdx = parseInt(intentionInputArea.dataset.editingIntentionIdx);
+
+            const activePlantIdx = isNaN(editingPlantIdx) || editingPlantIdx === -1 ? getActivePlantIndexForIntention() : editingPlantIdx;
+            
+            const intentionText = intentionInput.value.trim();
+
+            if (intentionText && intentionText.length <= INTENTION_CHAR_LIMIT) {
+                if (!currentPlantIntentions[activePlantIdx]) {
+                    currentPlantIntentions[activePlantIdx] = [];
+                }
+
+                if(!isNaN(editingIntentionIdx) && editingIntentionIdx !== -1 && currentPlantIntentions[activePlantIdx][editingIntentionIdx]) {
+                    currentPlantIntentions[activePlantIdx][editingIntentionIdx].text = intentionText;
+                    currentPlantIntentions[activePlantIdx][editingIntentionIdx].done = false; 
+                } else {
+                    currentPlantIntentions[activePlantIdx].push({text: intentionText, done: false});
+                }
+                
+                displayIntentionsFunnel(activePlantIdx); 
+
+                if (currentPlantIntentions[activePlantIdx].length === MAX_INTENTIONS_PER_PLANT) {
+                    intentionInputArea.classList.add('hidden');
+                    messageArea.textContent = "Ready?"; 
+                    startPauseButton.disabled = false;
+                    startPauseButton.textContent = 'Start';
+                } else {
+                    checkAndPromptForIntention(); 
+                }
+                saveState();
+                intentionInputArea.dataset.editingPlantIdx = -1;
+                intentionInputArea.dataset.editingIntentionIdx = -1;
+                setIntentionButton.textContent = "Set";
+
+
             } else if (intentionText.length > INTENTION_CHAR_LIMIT) {
                 showNotification(`Intention too long! Max ${INTENTION_CHAR_LIMIT} chars.`);
             } else {
@@ -752,26 +1108,41 @@
 
         // --- Timer Logic ---
         function toggleTimer() { 
-            const activePlantIdx = getActivePlantIndexForIntention();
-            if (plantStates[activePlantIdx] && plantStates[activePlantIdx].stage === 0 && !currentIntentions[activePlantIdx] && !isRunning) {
-                showIntentionInput(); 
+             if (startPauseButton.disabled) { 
+                checkAndPromptForIntention(); 
                 return;
             }
-            if (isRunning) pauseTimer(); else startTimer(); 
+            if (isRunning) {
+                pauseTimer();
+            } else {
+                startTimer(); 
+            }
         }
 
         function startTimer() {
+            console.log("startTimer called. isRunning:", isRunning, "currentTime:", currentTime, "startPauseButton.disabled:", startPauseButton.disabled);
             if (startPauseButton.disabled) return; 
             if (intervalId) { clearInterval(intervalId); intervalId = null; }
 
             if (currentTime <= 0) { 
                  if (isWorkSession) { currentTime = workDuration; } 
                  else { currentTime = (pomodorosInCycle >= longBreakInterval) ? longBreakDuration : breakDuration; }
+                 updateTimerDisplay(); 
             }
             isRunning = true;
             startPauseButton.textContent = 'Pause';
             intentionInputArea.classList.add('hidden'); 
-            animatedHighlight.style.opacity = '0'; 
+            
+            // Highlight logic on start:
+            const activePlantIdx = getActivePlantIndexForIntention();
+            const intentionsForPlant = currentPlantIntentions[activePlantIdx] || [];
+            if (intentionsForPlant.length === MAX_INTENTIONS_PER_PLANT) {
+                displayIntentionsFunnel(activePlantIdx); // This will highlight the last unfinished or the block
+            } else {
+                if(animatedHighlight) animatedHighlight.style.opacity = '0';
+            }
+
+
             const currentWorkVal = workDurationSelect.value;
             const currentBreakVal = breakDurationSelect.value;
             const currentLongBreakVal = longBreakDurationSelect.value;
@@ -806,7 +1177,8 @@
             if (confirmReset) {
                 isWorkSession = true; pomodorosInCycle = 0; totalPomodoros = 0;
                 plantStates = Array(MAX_PLANTS).fill(null).map(() => ({ stage: 0, pomosTowardsNextStage: 0 }));
-                currentIntentions = Array(MAX_PLANTS).fill("");
+                currentPlantIntentions = Array(MAX_PLANTS).fill(null).map(() => []);
+                stickyNotes = []; renderStickyNotes(); 
                 
                 workDurationSelect.value = 25; breakDurationSelect.value = 5;
                 longBreakIntervalSelect.value = 4; longBreakDurationSelect.value = 15;
@@ -816,7 +1188,12 @@
                 stopBackgroundSound();
                 updateBackgroundSoundToggleVisual();
                 showOverlayAlerts = true; updateOverlayAlertsToggleVisual();
-                
+                bgMusicInteracted = false; 
+                if(backgroundSoundToggleMain) backgroundSoundToggleMain.classList.add('ring-2', 'ring-yellow-400', 'ring-opacity-75');
+                saveSessionLogs = false; updateSaveSessionLogToggleVisual();
+                showIntentionActions = true; updateIntentionActionsToggleVisual();
+
+
                 updateDurations(); updateAdvancedSettings();
                 currentTime = workDuration;
 
@@ -849,6 +1226,29 @@
             }
         }
 
+        function logCompletedCycle(plantIndex, intentions) {
+            if (!saveSessionLogs) return; 
+
+            const logKey = 'pomodoroFocusGrowLog';
+            let log = JSON.parse(localStorage.getItem(logKey)) || {};
+            const today = new Date().toISOString().split('T')[0]; 
+            
+            if (!log[today]) {
+                log[today] = [];
+            }
+            log[today].push({
+                time: new Date().toLocaleTimeString(),
+                plant: plantIndex + 1,
+                intentions: intentions.map(item => item.text), 
+                workDuration: workDurationSelect.value,
+                breakDuration: breakDurationSelect.value,
+                pomodorosThisCycle: pomodorosInCycle 
+            });
+            localStorage.setItem(logKey, JSON.stringify(log));
+            console.log("Cycle logged:", log[today][log[today].length -1]);
+        }
+
+
         function sessionEnd() {
             clearInterval(intervalId); intervalId = null; isRunning = false; 
             startPauseButton.textContent = 'Start'; 
@@ -877,10 +1277,13 @@
                     updateMessageArea(`Break Time! (${currentBreakVal}m)`);
                 }
                 if (plantStates[activePlantIdx] && plantStates[activePlantIdx].stage === STAGES_PER_PLANT - 1 && plantGrew) {
-                    currentIntentions[activePlantIdx] = ""; 
+                    if(currentPlantIntentions[activePlantIdx] && currentPlantIntentions[activePlantIdx].length === MAX_INTENTIONS_PER_PLANT && currentPlantIntentions[activePlantIdx].every(i => i.done)) {
+                        logCompletedCycle(activePlantIdx, currentPlantIntentions[activePlantIdx]);
+                    }
+                    currentPlantIntentions[activePlantIdx] = []; 
                     if (plantStates.every(p => p.stage === STAGES_PER_PLANT -1)) {
                         plantStates[0] = { stage: 0, pomosTowardsNextStage: 0 };
-                        currentIntentions[0] = "";
+                        currentPlantIntentions[0] = [];
                         updatePlantVisual(0);
                     }
                 }
@@ -910,8 +1313,9 @@
             let title = `${timeString} - `;
             if (isWorkSession) {
                 const activePlantIdx = getActivePlantIndexForIntention();
-                if (currentIntentions[activePlantIdx]) {
-                    title += `${currentIntentions[activePlantIdx].substring(0,20)}... - Focus`;
+                const intentions = currentPlantIntentions[activePlantIdx] || [];
+                if (intentions.length > 0 && intentions[0].text) { 
+                    title += `${intentions[0].text.substring(0,20)}... - Focus`; 
                 } else {
                     title += "Focus";
                 }
@@ -956,10 +1360,15 @@
         }
         
         function advancePlantGrowth() {
-            let activePlantIdx = plantStates.findIndex((p, i) => p.stage < STAGES_PER_PLANT - 1 && currentIntentions[i]); 
+            let activePlantIdx = plantStates.findIndex((p, i) => p.stage < STAGES_PER_PLANT - 1 && (currentPlantIntentions[i] && currentPlantIntentions[i].length === MAX_INTENTIONS_PER_PLANT && currentPlantIntentions[i].every(item => item.done)));
             
             if (activePlantIdx === -1) { 
-                checkAndPromptForIntention(); return false;
+                activePlantIdx = plantStates.findIndex((p, i) => p.stage < STAGES_PER_PLANT - 1 && (currentPlantIntentions[i] && currentPlantIntentions[i].length === MAX_INTENTIONS_PER_PLANT));
+                if(activePlantIdx === -1){ 
+                    checkAndPromptForIntention(); 
+                    return false;
+                }
+                return false; 
             }
             
             const plant = plantStates[activePlantIdx];
@@ -1017,6 +1426,13 @@
         function toggleOverlayAlerts() { showOverlayAlerts = !showOverlayAlerts; updateOverlayAlertsToggleVisual(); saveState(); }
         function updateOverlayAlertsToggleVisual() { overlayAlertsToggle.textContent = showOverlayAlerts ? '💬' : '🗯️'; overlayAlertsToggle.title = showOverlayAlerts ? 'Hide Pop-up Alerts' : 'Show Pop-up Alerts'; }
 
+        function toggleSaveSessionLog() { saveSessionLogs = !saveSessionLogs; updateSaveSessionLogToggleVisual(); saveState(); }
+        function updateSaveSessionLogToggleVisual() { saveSessionLogToggle.textContent = saveSessionLogs ? '💾 On' : '💾 Off'; saveSessionLogToggle.title = saveSessionLogs ? 'Disable Session Logging' : 'Enable Session Logging';}
+
+        function toggleIntentionActions() { showIntentionActions = !showIntentionActions; updateIntentionActionsToggleVisual(); displayIntentionsFunnel(getActivePlantIndexForIntention()); saveState(); }
+        function updateIntentionActionsToggleVisual() { intentionActionsToggle.textContent = showIntentionActions ? '🛠️ On' : '🛠️ Off'; intentionActionsToggle.title = showIntentionActions ? 'Hide Intention Actions' : 'Show Intention Actions';}
+
+
         function toggleAdvancedSettingsPanel() { advancedSettingsPanelInner.classList.toggle('open'); } 
         
         function updateMessageArea(text) { 
@@ -1030,6 +1446,10 @@
 
         // --- Background Sound Logic ---
         function cycleBackgroundSound() {
+            if (!bgMusicInteracted && backgroundSoundToggleMain) {
+                backgroundSoundToggleMain.classList.remove('ring-2', 'ring-yellow-400', 'ring-opacity-75');
+                bgMusicInteracted = true;
+            }
             currentBackgroundSoundIndex = (currentBackgroundSoundIndex + 1) % BACKGROUND_SOUNDS.length;
             playCurrentBackgroundSound();
             updateBackgroundSoundToggleVisual();
@@ -1059,7 +1479,7 @@
         function playCurrentBackgroundSound() {
             stopBackgroundSound(); 
             const sound = BACKGROUND_SOUNDS[currentBackgroundSoundIndex];
-            if (sound.key === 'off' || !sound.src) return;
+            if (sound.key === 'off') return;
 
             audioCtx = getAudioContext();
             if (!audioCtx) return;
@@ -1067,44 +1487,112 @@
                 audioCtx.resume().catch(e => console.error("Error resuming audio context:", e));
             }
 
-            backgroundAudioElement = new Audio(sound.src);
-            backgroundAudioElement.loop = true;
-            
-            if (!backgroundAudioSourceNode || backgroundAudioSourceNode.mediaElement !== backgroundAudioElement) {
-                 if (backgroundAudioSourceNode) { try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */} }
-                try { 
-                    backgroundAudioSourceNode = audioCtx.createMediaElementSource(backgroundAudioElement);
-                } catch (e) {
-                    console.error("Error creating media element source for MP3:", e);
-                    return; 
+            if (sound.src) { 
+                console.log("Attempting to play MP3:", sound.src); 
+                backgroundAudioElement = new Audio(sound.src);
+                backgroundAudioElement.loop = true;
+                
+                if (!backgroundAudioSourceNode || backgroundAudioSourceNode.mediaElement !== backgroundAudioElement) {
+                     if (backgroundAudioSourceNode) { try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */} }
+                    try { 
+                        backgroundAudioSourceNode = audioCtx.createMediaElementSource(backgroundAudioElement);
+                    } catch (e) {
+                        console.error("Error creating media element source for MP3:", e);
+                        if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) { 
+                            console.log("MP3 source creation failed, attempting generated fallback for:", sound.name);
+                            playGeneratedBinauralSound(sound);
+                        }
+                        return; 
+                    }
                 }
-            }
 
-            backgroundGainNode = audioCtx.createGain();
-            let volumeValue = parseFloat(backgroundVolumeSliderMain.value);
-            if (isNaN(volumeValue)) volumeValue = 0.1; 
-            backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
-            
-            if(backgroundAudioSourceNode) { 
-                backgroundAudioSourceNode.connect(backgroundGainNode);
-                backgroundGainNode.connect(audioCtx.destination);
-            
-                backgroundAudioElement.play().catch(error => {
-                    console.error(`Error playing MP3 (${sound.src}). Check path and browser permissions. Original error:`, error);
-                    currentBackgroundSoundIndex = 0; 
-                    stopBackgroundSound(); 
-                    updateBackgroundSoundToggleVisual();
-                    saveState();
-                });
+                backgroundGainNode = audioCtx.createGain();
+                let volumeValue = parseFloat(backgroundVolumeSliderMain.value);
+                if (isNaN(volumeValue)) volumeValue = 0.1; 
+                backgroundGainNode.gain.setValueAtTime(volumeValue, audioCtx.currentTime);
+                
+                if(backgroundAudioSourceNode) { 
+                    backgroundAudioSourceNode.connect(backgroundGainNode);
+                    backgroundGainNode.connect(audioCtx.destination);
+                
+                    backgroundAudioElement.play().catch(error => {
+                        console.error(`Error playing MP3 (${sound.src}). Check path and browser permissions. Original error:`, error);
+                        if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) {
+                            console.log("MP3 playback failed, attempting generated fallback for:", sound.name);
+                            playGeneratedBinauralSound(sound);
+                        } else {
+                            currentBackgroundSoundIndex = 0; 
+                            stopBackgroundSound(); 
+                            updateBackgroundSoundToggleVisual();
+                            saveState();
+                        }
+                    });
+                }
+            } else if (sound.fallbackType === 'binaural' && sound.baseFreq && sound.beatFreq) { 
+                 console.log("Playing generated sound directly for:", sound.name);
+                 playGeneratedBinauralSound(sound);
             }
         }
+        
+        function playGeneratedBinauralSound(soundDetails) { 
+            if (!audioCtx) audioCtx = getAudioContext();
+            if (!audioCtx || audioCtx.state === 'closed') {
+                 console.warn("AudioContext closed, cannot play generated sound.");
+                 return;
+            }
+             if (audioCtx.state === 'suspended') { 
+                audioCtx.resume().catch(e => console.error("Error resuming audio context for generated sound:", e));
+            }
+            
+            stopBackgroundSound(); 
+
+            backgroundGainNode = audioCtx.createGain();
+            let sliderVolume = parseFloat(backgroundVolumeSliderMain.value);
+            let effectiveVolume;
+            if (isNaN(sliderVolume)) sliderVolume = 0.1; 
+
+            if (soundDetails.key === 'alpha') {
+                effectiveVolume = sliderVolume * 0.5 * 0.1; 
+            } else {
+                 effectiveVolume = sliderVolume * 0.1; 
+            }
+            
+            backgroundGainNode.gain.setValueAtTime(effectiveVolume, audioCtx.currentTime);
+            backgroundGainNode.connect(audioCtx.destination);
+
+            backgroundFallbackOsc1 = audioCtx.createOscillator();
+            backgroundFallbackOsc2 = audioCtx.createOscillator();
+            backgroundFallbackOsc1.type = 'sine';
+            backgroundFallbackOsc2.type = 'sine';
+            backgroundFallbackOsc1.frequency.setValueAtTime(soundDetails.baseFreq - soundDetails.beatFreq / 2, audioCtx.currentTime);
+            backgroundFallbackOsc2.frequency.setValueAtTime(soundDetails.baseFreq + soundDetails.beatFreq / 2, audioCtx.currentTime);
+            backgroundFallbackOsc1.connect(backgroundGainNode);
+            backgroundFallbackOsc2.connect(backgroundGainNode);
+            backgroundFallbackOsc1.start();
+            backgroundFallbackOsc2.start();
+        }
+
 
         function handleVolumeChange(event) {
-            const newVolume = parseFloat(event.target.value);
+            const newVolume = parseFloat(event.target.value); // Slider value 0-1
             if (backgroundGainNode) {
                 if (!audioCtx) audioCtx = getAudioContext();
                 if (audioCtx) {
-                    backgroundGainNode.gain.setValueAtTime(newVolume, audioCtx.currentTime);
+                    let volumeToSet;
+                    const currentSound = BACKGROUND_SOUNDS[currentBackgroundSoundIndex];
+                    
+                    let isGeneratedAlphaPlaying = currentSound.fallbackType === 'binaural' && 
+                                                  currentSound.key === 'alpha' && 
+                                                  (!backgroundAudioElement || // No MP3 element attempted or...
+                                                   (backgroundAudioElement && backgroundAudioElement.error) || // MP3 failed to load
+                                                   !currentSound.src); // Sound definition has no src (explicitly generated)
+
+                    if (isGeneratedAlphaPlaying) { 
+                        volumeToSet = newVolume * 0.5 * 0.1; // Max 0.05 gain
+                    } else {
+                        volumeToSet = newVolume * 0.1; // Max 0.1 gain for MP3s or other generated sounds
+                    }
+                    backgroundGainNode.gain.setValueAtTime(volumeToSet, audioCtx.currentTime);
                 }
             }
             if(backgroundVolumeSliderMain) backgroundVolumeSliderMain.value = newVolume;
@@ -1119,6 +1607,14 @@
             }
             if (backgroundAudioSourceNode) {
                 try { backgroundAudioSourceNode.disconnect(); } catch(e) {/* ignore */}
+            }
+            if (backgroundFallbackOsc1) { 
+                try { backgroundFallbackOsc1.stop(); backgroundFallbackOsc1.disconnect(); } catch(e) {/* ignore */}
+                backgroundFallbackOsc1 = null; 
+            }
+            if (backgroundFallbackOsc2) { 
+                try { backgroundFallbackOsc2.stop(); backgroundFallbackOsc2.disconnect(); } catch(e) {/* ignore */}
+                backgroundFallbackOsc2 = null; 
             }
             if (backgroundGainNode) {
                 try { backgroundGainNode.disconnect(); } catch(e) {/* ignore */}
@@ -1139,6 +1635,63 @@
             if (showOverlayAlerts) { 
                 modalMessage.textContent = message; 
                 notificationModal.style.display = 'block'; 
+            }
+        }
+        
+        // --- Sticky Notes ---
+        function renderStickyNotes() {
+            stickyNotesDisplayArea.innerHTML = '';
+            stickyNotes.forEach((noteText, index) => {
+                const noteDiv = document.createElement('div');
+                noteDiv.classList.add('sticky-note', 'p-2', 'rounded', 'shadow', 'cursor-pointer', 'break-words');
+                noteDiv.textContent = noteText.length > 30 ? noteText.substring(0, 27) + "..." : noteText;
+                noteDiv.title = noteText; 
+                noteDiv.addEventListener('click', () => viewStickyNote(index));
+                stickyNotesDisplayArea.appendChild(noteDiv);
+            });
+        }
+
+        function handleSaveNotepad() {
+            const text = notepadTextarea.value.trim();
+            if (text) {
+                if (editingStickyNoteIndex > -1) { 
+                    stickyNotes[editingStickyNoteIndex] = text.substring(0, STICKY_NOTE_CHAR_LIMIT);
+                } else { 
+                    if (stickyNotes.length >= MAX_STICKY_NOTES) {
+                        stickyNotes.shift(); 
+                    }
+                    stickyNotes.push(text.substring(0, STICKY_NOTE_CHAR_LIMIT));
+                }
+                editingStickyNoteIndex = -1; 
+                renderStickyNotes();
+                saveState();
+            }
+            notepadModal.style.display = 'none';
+        }
+
+        function viewStickyNote(index) {
+            if (stickyNotes[index]) {
+                fullNoteText.textContent = stickyNotes[index];
+                viewNoteModal.dataset.noteIndex = index; 
+                viewNoteModal.style.display = 'block';
+            }
+        }
+        function editStickyNote(index) {
+            if (stickyNotes[index]) {
+                notepadTextarea.value = stickyNotes[index];
+                editingStickyNoteIndex = index;
+                viewNoteModal.style.display = 'none';
+                notepadModal.style.display = 'block';
+                notepadTextarea.focus();
+            }
+        }
+
+        function deleteStickyNote(index) {
+            if (stickyNotes[index]) {
+                stickyNotes.splice(index, 1);
+                renderStickyNotes();
+                saveState();
+                viewNoteModal.style.display = 'none';
             }
         }
         
